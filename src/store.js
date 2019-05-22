@@ -22,7 +22,22 @@ export default new Vuex.Store({
       config: {
         curOfferKey: 0, // index of array
         tempOfferId: '', // used in ID manual edit field to check if id already exist.
-        lastID: '00001' // last used ID
+        lastID: '00001', // last used ID
+        miniOfferSetup: {
+          Pars: [],
+          Props: {
+            // Offer_Id: true,
+            Available: true,
+            Name: true,
+            Picture: true,
+            Stock_Quantity: true,
+            // Category_Id: true,
+            Url: false,
+            Price: false,
+            Currency_Id: false,
+            Vendor: false
+          }
+        }
       },
       Xml: {
         Version: '1.0',
