@@ -25,7 +25,7 @@
             <p>Selected Properties:</p>
             <div v-for="(el2, k2) in Object.keys(miniOfferSetup.Props)" :key="'2-' + k2">
                 <p v-if="miniOfferSetup.Props[el2] == true">{{el2}}</p>
-            </div>           
+            </div>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
@@ -43,44 +43,46 @@
   </div>
 </template>
 <script>
-import Vue from "vue";
-import overBody from "vue-over-body";
-import { mapGetters, mapMutations, mapActions, mapState } from "vuex";
+import Vue from 'vue'
+import overBody from 'vue-over-body'
+import { mapGetters, mapMutations, mapActions, mapState } from 'vuex'
 
 export default {
   components: {
     VueOverBody: overBody
   },
-  data: function() {
+  data: function () {
     return {
       open: 0
-    };
+    }
   },
   computed: {
     ...mapState([
-      "mainData",
-      "xmlValues"
-    ]), 
-    miniOfferSetup () {
-      return this.$store.state.xmlValues.config.miniOfferSetup
+      'mainData'
+    ]),
+    xmlValues() {
+      return this.$store.state.curPriceListData.xmlValues
     },
-    returnPars() {
-      let arr = [];
+    miniOfferSetup () {
+      return this.$store.state.curPriceListData.config.miniOfferSetup
+    },
+    returnPars () {
+      let arr = []
       for (let off in this.xmlValues.Offers) {
         for (let el4 in this.xmlValues.Offers[off].data.Pars) {
-          arr.push(this.xmlValues.Offers[off].data.Pars[el4].Name);
+          arr.push(this.xmlValues.Offers[off].data.Pars[el4].Name)
         }
       }
-      var unique = arr.filter(function(elem, index, self) {
-        return index === self.indexOf(elem);
-      });
-      return unique;
+      var unique = arr.filter(function (elem, index, self) {
+        return index === self.indexOf(elem)
+      })
+      return unique
     }
   },
   methods: {
 
   }
-};
+}
 </script>
 <style>
 .before {

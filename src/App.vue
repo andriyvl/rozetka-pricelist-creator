@@ -62,7 +62,7 @@
 export default {
   data () {
     return {
-      appTitle: "Awesome App",
+      appTitle: 'Awesome App',
       sidebar: false
     }
   },

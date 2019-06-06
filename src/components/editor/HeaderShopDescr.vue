@@ -54,11 +54,11 @@
   </div>
 </template>
 <script>
-import Editor from "./Editor";
+import Editor from './Editor'
 export default {
-  name: "HeaderShopDescr",
-  props: ["xmlValues", "addOption", "deleteOption"]
-};
+  name: 'HeaderShopDescr',
+  props: ['xmlValues', 'addOption', 'deleteOption']
+}
 </script>
 <style>
 

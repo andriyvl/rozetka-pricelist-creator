@@ -15,10 +15,11 @@ export default new Vuex.Store({
     SignUp: { title: 'Sign Up', path: '/signup', icon: 'fa-user-plus' },
     SignIn: { title: 'Sign In', path: '/signin', icon: 'fa-sign-in-alt' },
     mainData: {
-      curPriceList: 0,
-      priceLists: { 0: 'pricelist1', 1: 'pricelist2' }
+      curPriceList: '',
+      priceLists: [],
+      priceListSet: 'N'
     },
-    xmlValues: {
+    curPriceListData: {
       config: {
         curOfferKey: 0, // index of array
         tempOfferId: '', // used in ID manual edit field to check if id already exist.
@@ -39,107 +40,109 @@ export default new Vuex.Store({
           }
         }
       },
-      Xml: {
-        Version: '1.0',
-        Encoding: 'UTF-8'
-      },
-      YmlDate: '2018-12-19 18:00' /* todo take todays date and time */,
-      Name: 'Eternity',
-      Company: 'Eternity',
-      Url: '',
-      Curs: {
-        0: {
-          Id: 'UAH',
-          Rate: '1'
-        }
-      },
-      Cat: {
-        0: {
-          Id: '1',
-          Name: 'Trusiki',
-          Child: {
-            0: { Id: '101', Name: 'Trusy' }
+      xmlValues: {
+        Xml: {
+          Version: '1.0',
+          Encoding: 'UTF-8'
+        },
+        YmlDate: '2018-12-19 18:00' /* todo take todays date and time */,
+        Name: 'Eternity',
+        Company: 'Eternity',
+        Url: '',
+        Curs: {
+          0: {
+            Id: 'UAH',
+            Rate: '1'
           }
         },
-        1: {
-          Id: '2',
-          Name: 'Pusiki',
-          Child: {
-            0: { Id: '201', Name: 'Pussy' }
+        Cat: {
+          0: {
+            Id: '1',
+            Name: 'Trusiki',
+            Child: {
+              0: { Id: '101', Name: 'Trusy' }
+            }
+          },
+          1: {
+            Id: '2',
+            Name: 'Pusiki',
+            Child: {
+              0: { Id: '201', Name: 'Pussy' }
+            }
           }
-        }
-      },
-      Offers: {
-        0: {
-          Available: 'true',
-          Id: '00001',
-          data: {
-            Url: 'www.viychuklingerie.com',
-            Price: '850',
-            CurId: 'UAH',
-            CatId: '1',
-            Pics: {
-              0: 'https://raw.githubusercontent.com/viylingerie/Photo/master/Elena%20silk.blck1.JPG'
-            },
-            Name: 'Name of Offer',
-            Vendor: 'Eternity',
-            Descr: `<p>Нижнее белье<b>Eternity</b>Интернет магазин Eternity представляет украинский бренд нижнего женского белья Viychuk lingerie создан в 2015 году.
-Мы представлены в нескольких городах Украины, Черновцы, Львов, Киев.
-Наша цель - создавать комфорт и эстетику в повседневной жизни женщины, красивое белье создано не только для "особого дня" а для того чтобы Вы в нем жили.
-С каждой коллекцией мы добавляем новые модели в наш ассортимент. </p>
-<p> Теперь у нас можно приобрести белье с мягкими чашками, белье с косточками, купальники - целый год, боди и шелковые накидки. </p>
-<p> Viychuk lingerie <b> New Collection </b> Комплект Elena silk создает ваш комфорт и нежность</p>` /* todo text editor? */,
-            Pars: {
-              0: {
-                Name: 'Вид',
-                Descr: ''
+        },
+        Offers: {
+          0: {
+            Available: 'true',
+            Id: '00001',
+            data: {
+              Url: 'www.viychuklingerie.com',
+              Price: '850',
+              CurId: 'UAH',
+              CatId: '1',
+              Pics: {
+                0: 'https://raw.githubusercontent.com/viylingerie/Photo/master/Elena%20silk.blck1.JPG'
               },
-              1: {
-                Name: 'Размер',
-                Descr: ''
-              } /* todo choises */,
-              2: {
-                Name: 'Чашка',
-                Descr: ''
+              Name: 'Name of Offer',
+              Vendor: 'Eternity',
+              Descr: `<p>Нижнее белье<b>Eternity</b>Интернет магазин Eternity представляет украинский бренд нижнего женского белья Viychuk lingerie создан в 2015 году.
+  Мы представлены в нескольких городах Украины, Черновцы, Львов, Киев.
+  Наша цель - создавать комфорт и эстетику в повседневной жизни женщины, красивое белье создано не только для "особого дня" а для того чтобы Вы в нем жили.
+  С каждой коллекцией мы добавляем новые модели в наш ассортимент. </p>
+  <p> Теперь у нас можно приобрести белье с мягкими чашками, белье с косточками, купальники - целый год, боди и шелковые накидки. </p>
+  <p> Viychuk lingerie <b> New Collection </b> Комплект Elena silk создает ваш комфорт и нежность</p>` /* todo text editor? */,
+              Pars: {
+                0: {
+                  Name: 'Вид',
+                  Descr: ''
+                },
+                1: {
+                  Name: 'Размер',
+                  Descr: ''
+                } /* todo choises */,
+                2: {
+                  Name: 'Чашка',
+                  Descr: ''
+                },
+                3: {
+                  Name: 'Категория',
+                  Descr: ''
+                },
+                4: {
+                  Name: 'Цвет',
+                  Descr: 'Синий'
+                } /* todo choises */,
+                5: {
+                  Name: 'Застежка',
+                  Descr: ''
+                },
+                6: {
+                  Name: 'Посадка трусиков',
+                  Descr: ''
+                },
+                7: {
+                  Name: 'Бретели',
+                  Descr: ''
+                },
+                8: {
+                  Name: 'Материал',
+                  Descr: ''
+                },
+                9: {
+                  Name: 'Состав',
+                  Descr: ''
+                },
+                10: {
+                  Name: 'Страна-производитель',
+                  Descr: ''
+                },
+                11: {
+                  Name: 'Доставка/Оплата',
+                  Descr: ''
+                }
               },
-              3: {
-                Name: 'Категория',
-                Descr: ''
-              },
-              4: {
-                Name: 'Цвет',
-                Descr: 'Синий'
-              } /* todo choises */,
-              5: {
-                Name: 'Застежка',
-                Descr: ''
-              },
-              6: {
-                Name: 'Посадка трусиков',
-                Descr: ''
-              },
-              7: {
-                Name: 'Бретели',
-                Descr: ''
-              },
-              8: {
-                Name: 'Материал',
-                Descr: ''
-              },
-              9: {
-                Name: 'Состав',
-                Descr: ''
-              },
-              10: {
-                Name: 'Страна-производитель',
-                Descr: ''
-              },
-              11: {
-                Name: 'Доставка/Оплата',
-                Descr: ''
-              }
-            },
-            StockQ: '5'
+              StockQ: '5'
+            }
           }
         }
       }
@@ -155,26 +158,30 @@ export default new Vuex.Store({
     setLoading (state, payload) {
       state.loading = payload
     },
-    setMainData (state, payload) {
+    /*     setMainData (state, payload) {
       console.log(state.mainData)
       state.mainData = payload
       console.log(state.mainData)
-      console.log(state.xmlValues)
+      console.log(state.curPriceListData.xmlValues)
+    }, */
+    setConfig (state, payload) {
+      state.curPriceListData.config = payload
+      console.log(state.curPriceListData.config)
     },
     setXmlValues (state, payload) {
-      state.xmlValues = payload
-      console.log(state.xmlValues)
+      state.curPriceListData.xmlValues = payload
+      console.log(state.curPriceListData.xmlValues)
     },
     addNewOffer (state, payload) {
-      state.xmlValues.Offers[payload.key] = payload.tempOffer
-      state.xmlValues.Offers = Object.assign({}, state.xmlValues.Offers)
+      state.curPriceListData.xmlValues.Offers[payload.key] = payload.tempOffer
+      state.curPriceListData.xmlValues.Offers = Object.assign({}, state.curPriceListData.xmlValues.Offers)
     },
     addOption (state, payload) {
       Vue.set(payload.path, payload.key, payload.newEl)
     },
     deleteOffer (state, payload) {
-      delete state.xmlValues.Offers[payload.curI]
-      state.xmlValues.Offers = Object.assign({}, Object.values(state.xmlValues.Offers))
+      delete state.curPriceListData.xmlValues.Offers[payload.curI]
+      state.curPriceListData.xmlValues.Offers = Object.assign({}, Object.values(state.curPriceListData.xmlValues.Offers))
     },
     deleteOption (state, payload) { // to be improved
       Vue.delete(payload.path, payload.key)
@@ -189,10 +196,13 @@ export default new Vuex.Store({
       }
     },
     setCurOfferKey (state, payload) {
-      state.xmlValues.config.curOfferKey = payload
+      state.curPriceListData.config.curOfferKey = payload
     },
     setOffer (state, payload) {
-      state.xmlValues.Offers[payload.sourceKey] = payload.obj
+      state.curPriceListData.xmlValues.Offers[payload.sourceKey] = payload.obj
+    },
+    setPriceLists (state, payload) {
+      state.mainData.priceLists = payload
     }
   },
   actions: {
@@ -244,10 +254,13 @@ export default new Vuex.Store({
       commit('setUser', null)
       router.push('/')
     },
-    getDataFromFB ({ commit }, payload) {
+    getDataFromFB ({ state, commit }, payload) {
       let userid = firebase.auth().currentUser.uid
-      firebase.database().ref('/users/' + userid + '/xmlValues').once('value').then(function (snapshot) {
+      let cur = state.mainData.curPriceList
+      firebase.database().ref('/users/' + userid + '/' + cur).once('value').then(function (snapshot) {
         let tempdata = snapshot.val()
+        let xmlData = tempdata.xmlValues
+        let configData = tempdata.config
         const iterate = (obj) => {
           Object.keys(obj).forEach(key => {
             if (Array.isArray(obj[key])) {
@@ -258,23 +271,32 @@ export default new Vuex.Store({
             }
           })
         }
-        iterate(tempdata)
+        iterate(xmlData)
         // tempdata.priceLists = { ...tempdata.priceLists } // same as object assign
-        commit('setXmlValues', tempdata)
+        commit('setXmlValues', xmlData)
+        commit('setConfig', configData)
+      })
+    },
+    getPriceLists ({ state, commit }, payload) {
+      let userid = firebase.auth().currentUser.uid
+      firebase.database().ref('/users/' + userid + '/mainData/priceLists').once('value').then(function (snapshot) {
+        let tempdata = snapshot.val()
+        commit('setPriceLists', tempdata)
       })
     },
     setDataToFB ({ state, commit }, payload) {
       let userid = firebase.auth().currentUser.uid
-      firebase.database().ref('/users/' + userid + '/' + 'xmlValues').set({
-        ...state.xmlValues
+      let cur = state.mainData.curPriceList
+      firebase.database().ref('/users/' + userid + '/' + cur).set({
+        ...state.curPriceListData
         // curPriceList: state.mainData.curPriceList,
         // priceLists: state.mainData.priceLists,
-        // curOfferKey: state.xmlValues.config.curOfferKey,
-        // tempOfferId: state.xmlValues.config.tempOfferId,
-        // lastID: state.xmlValues.config.lastID
+        // curOfferKey: state.curPriceListData.config.curOfferKey,
+        // tempOfferId: state.curPriceListData.config.tempOfferId,
+        // lastID: state.curPriceListData.config.lastID
       })
-      firebase.database().ref('/users/' + userid + '/' + 'mainData').set({
-        ...state.mainData
+      firebase.database().ref('/users/' + userid + '/mainData/priceLists').set({
+        ...state.mainData.priceLists
       })
     }
   },
@@ -286,13 +308,14 @@ export default new Vuex.Store({
       return state.mainData
     },
     xmlValues (state) {
-      return state.xmlValues
+      return state.curPriceListData.xmlValues
     },
     getOffer: (state) => (key) => {
-      return state.xmlValues.Offers[key]
+      return state.curPriceListData.xmlValues.Offers[key]
     },
     getParams (state) {
-      return state.xmlValues.Offers[0].data.Pars
+      return state.curPriceListData.xmlValues.Offers[0].data.Pars
     }
   }
+
 })
