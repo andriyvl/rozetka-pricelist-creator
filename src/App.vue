@@ -62,7 +62,7 @@
 export default {
   data () {
     return {
-      appTitle: 'Awesome App',
+      appTitle: 'Rozetka pricelist creator',
       sidebar: false
     }
   },
