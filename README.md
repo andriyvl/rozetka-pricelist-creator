@@ -1,4 +1,6 @@
-# medium-app
+# Rozetka pricelist creator
+### This app is used for generating of xml-pricelists for rozetka.com.ua using user interface.
+### Currently in development
 
 ## Project setup
 ```
