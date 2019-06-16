@@ -10,30 +10,35 @@
     v-model="valid"
     lazy-validation
   >
-
-    <v-select
-      v-model="select"
+    <v-layout>
+      <v-select
+      v-model="selectedPriceList"
       :items="mainData.priceLists"
       :rules="[v => !!v || 'Item is required']"
       label="Select Pricelist"
-      required
-    ></v-select>
+      required>
+      </v-select>
+      <v-btn v-if="!addNew && selectedPriceList" icon @click="deletePriceList(selectedPriceList);selectedPriceList = ''">X</v-btn>
+    </v-layout>
 
-    <v-text-field
+
+    <v-layout row wrap>
+      <v-text-field
       v-if="addNew"
       v-model="name"
       :counter="10"
       :rules="nameRules"
       label="Name"
-      append-icon="close"
       required
     ></v-text-field>
+      <v-btn v-if="addNew" icon @click="addNew = false">X</v-btn>
+    </v-layout>
     <v-btn
     v-if="!addNew" color="info" @click="addNew = true"> Add New</v-btn>
     <v-btn v-if="addNew" color="info" @click="addNewPricelist">Add</v-btn>
 
     <v-btn
-      :disabled="!valid"
+      :disabled="!valid || addNew || selectedPriceList == ''"
       color="success"
       @click="validate"
     >
@@ -54,10 +59,11 @@ export default {
     created () {
       this.getPriceLists()
     },
+    props: ['deletePriceList'], 
     data: () => ({
       valid: true,
       name: '',
-      select: '',
+      selectedPriceList: '',
       nameRules: [
         v => !!v || 'Name is required',
         v => (v && v.length >= 2) || 'Name must be less than 2 characters'
@@ -70,14 +76,14 @@ export default {
         if (this.$refs.form.validate()) {
           this.snackbar = true
         }
-        this.mainData.curPriceList = this.select
-        this.mainData.priceListSet = 'Y'
+        this.$store.commit('setUnSetPriceList', {cur: this.selectedPriceList, set: 'Y'})
         this.$store.dispatch('getDataFromFB')
       },
       addNewPricelist () {
-          let list = []
+          let list = this.mainData.priceLists
           list.push(this.name)
-          this.mainData.priceLists = list
+          this.$store.commit('addPriceListToArray', list)
+          this.selectedPriceList = this.name
           this.name = ''
           this.addNew = false
       },

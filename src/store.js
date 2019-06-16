@@ -146,6 +146,115 @@ export default new Vuex.Store({
           }
         }
       }
+    },
+    PriceListDataTemplate: {
+      config: {
+        curOfferKey: 0, // index of array
+        tempOfferId: '', // used in ID manual edit field to check if id already exist.
+        lastID: '00001', // last used ID
+        miniOfferSetup: {
+          Pars: [''],
+          Props: {
+            // Offer_Id: true,
+            Available: true,
+            Name: true,
+            Picture: true,
+            Stock_Quantity: true,
+            // Category_Id: true,
+            Url: false,
+            Price: false,
+            Currency_Id: false,
+            Vendor: false
+          }
+        }
+      },
+      xmlValues: {
+        Xml: {
+          Version: '1.0',
+          Encoding: 'UTF-8'
+        },
+        YmlDate: '2018-12-19 18:00' /* todo take todays date and time */,
+        Name: 'Назва Магазину',
+        Company: 'Назва Компанії',
+        Url: 'www.адрес-вашого-сайту.домен',
+        Curs: {
+          0: {
+            Id: 'UAH',
+            Rate: '1'
+          }
+        },
+        Cat: {
+          0: {
+            Id: '1',
+            Name: 'Верхній одяг',
+            Child: {
+              0: { Id: '101', Name: 'Сорочки' },
+              1: { Id: '102', Name: 'Футболки' }
+            }
+          },
+          1: {
+            Id: '2',
+            Name: 'Нижній одяг',
+            Child: {
+              0: { Id: '201', Name: 'Штани' },
+              1: { Id: '202', Name: 'Шорти' }
+            }
+          }
+        },
+        Offers: {
+          0: {
+            Available: 'true',
+            Id: '00001',
+            data: {
+              Url: 'www.адрес-вашого-сайту.домен',
+              Price: '850',
+              CurId: 'UAH',
+              CatId: '102',
+              Pics: {
+                0: 'https://upload.wikimedia.org/wikipedia/commons/2/24/Blue_Tshirt.jpg'
+              },
+              Name: 'Назва продукту',
+              Vendor: 'Виробник продукту',
+              Descr: `<p>Синя футболка з круглим вирізом <b>Назва Бренду</b> Круглий виріз, короткі рукави, однотонний дизайн, точне співвідношення розміру 100% бавовна Машинне прання</p>` /* todo text editor? */,
+              Pars: {
+                0: {
+                  Name: 'Вид',
+                  Descr: ''
+                },
+                1: {
+                  Name: 'Розмір',
+                  Descr: 'М'
+                } /* todo choises */,
+                2: {
+                  Name: 'Категорія',
+                  Descr: ''
+                },
+                3: {
+                  Name: 'Колір',
+                  Descr: 'Синій'
+                } /* todo choises */,
+                4: {
+                  Name: 'Матеріал',
+                  Descr: 'Бавовна 100%'
+                },
+                5: {
+                  Name: 'Склад',
+                  Descr: ''
+                },
+                6: {
+                  Name: 'Країна виробник',
+                  Descr: 'Україна'
+                },
+                7: {
+                  Name: 'Доставка/Оплата',
+                  Descr: 'Укрпошта'
+                }
+              },
+              StockQ: '5'
+            }
+          }
+        }
+      }
     }
   },
   mutations: {
@@ -158,7 +267,7 @@ export default new Vuex.Store({
     setLoading (state, payload) {
       state.loading = payload
     },
-    /*     setMainData (state, payload) {
+    /* setMainData (state, payload) {
       console.log(state.mainData)
       state.mainData = payload
       console.log(state.mainData)
@@ -203,6 +312,24 @@ export default new Vuex.Store({
     },
     setPriceLists (state, payload) {
       state.mainData.priceLists = payload
+    },
+    createFromTemplate (state, payload) {
+      Vue.delete(state, 'curPriceListData')
+      let obj
+      obj = JSON.parse(JSON.stringify(state.PriceListDataTemplate))
+      console.log(obj)
+      Vue.set(state, 'curPriceListData', obj)
+    },
+    setUnSetPriceList (state, payload) {
+      state.mainData.curPriceList = payload.cur
+      state.mainData.priceListSet = payload.set
+    },
+    addPriceListToArray (state, payload) {
+      state.mainData.priceLists = payload
+    },
+    deletePriceListFromArray (state, payload) {
+      let ind = state.mainData.priceLists.indexOf(payload)
+      state.mainData.priceLists.pop(ind)
     }
   },
   actions: {
@@ -254,27 +381,33 @@ export default new Vuex.Store({
       commit('setUser', null)
       router.push('/')
     },
-    getDataFromFB ({ state, commit }, payload) {
+    getDataFromFB ({ state, commit, dispatch }, payload) {
       let userid = firebase.auth().currentUser.uid
       let cur = state.mainData.curPriceList
       firebase.database().ref('/users/' + userid + '/' + cur).once('value').then(function (snapshot) {
         let tempdata = snapshot.val()
-        let xmlData = tempdata.xmlValues
-        let configData = tempdata.config
-        const iterate = (obj) => {
-          Object.keys(obj).forEach(key => {
-            if (Array.isArray(obj[key])) {
-              obj[key] = { ...obj[key] }
-            }
-            if (typeof obj[key] === 'object') {
-              iterate(obj[key])
-            }
-          })
+        if (tempdata) {
+          let xmlData = tempdata.xmlValues
+          let configData = tempdata.config
+          const iterate = (obj) => {
+            Object.keys(obj).forEach(key => {
+              if (Array.isArray(obj[key])) {
+                obj[key] = { ...obj[key] }
+              }
+              if (typeof obj[key] === 'object') {
+                iterate(obj[key])
+              }
+            })
+          }
+          iterate(xmlData)
+          // tempdata.priceLists = { ...tempdata.priceLists } // same as object assign
+          commit('setXmlValues', xmlData)
+          commit('setConfig', configData)
+        } else {
+          console.log('else create from template')
+          commit('createFromTemplate')
+          dispatch('setDataToFB')
         }
-        iterate(xmlData)
-        // tempdata.priceLists = { ...tempdata.priceLists } // same as object assign
-        commit('setXmlValues', xmlData)
-        commit('setConfig', configData)
       })
     },
     getPriceLists ({ state, commit }, payload) {
@@ -284,7 +417,7 @@ export default new Vuex.Store({
         commit('setPriceLists', tempdata)
       })
     },
-    setDataToFB ({ state, commit }, payload) {
+    setDataToFB ({ state, commit, dispatch }, payload) {
       let userid = firebase.auth().currentUser.uid
       let cur = state.mainData.curPriceList
       firebase.database().ref('/users/' + userid + '/' + cur).set({
@@ -295,9 +428,22 @@ export default new Vuex.Store({
         // tempOfferId: state.curPriceListData.config.tempOfferId,
         // lastID: state.curPriceListData.config.lastID
       })
+      dispatch('setPriceListsToFB')
+    },
+    setPriceListsToFB ({ state, commit }, payload) {
+      let userid = firebase.auth().currentUser.uid
       firebase.database().ref('/users/' + userid + '/mainData/priceLists').set({
         ...state.mainData.priceLists
       })
+    },
+    deletePriceListAction ({ state, commit, dispatch }, payload) {
+      let userid = firebase.auth().currentUser.uid
+      firebase.database().ref('/users/' + userid).child(payload).remove()
+
+      commit('setUnSetPriceList', { cur: '', set: 'N' })
+
+      commit('deletePriceListFromArray', payload)
+      dispatch('setPriceListsToFB')
     }
   },
   getters: {

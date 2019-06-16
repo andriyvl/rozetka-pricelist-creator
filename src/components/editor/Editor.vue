@@ -5,17 +5,11 @@
         <div id="control-header">
           <p>
             Currenty editing:
-            <select name id v-model="mainData.curPriceList">
-              <option disabled value>Choose a price list</option>
-              <option
-                v-for="(el, k12) in Object.keys(mainData.priceLists)"
-                :key="el.k12"
-              >{{mainData.priceLists[k12]}}</option>
-            </select>
+            {{mainData.curPriceList}}
+            <v-btn small color="info" @click.prevent="switchPriceList">SWITCH PRICE LIST</v-btn>
             <v-btn small color="success" @click.prevent="setDataToFB">SAVE</v-btn>
             <v-btn small color="warning" @click.prevent="getDataFromFB">GETDATA</v-btn>
           </p>
-
         </div>
         <hr>
         <br>
@@ -105,14 +99,15 @@
                 v-model="xmlValues.Offers[config.curOfferKey].data.CatId"
               >
                 <option disabled value>Please select one</option>
-                <option v-for="(el, k6) in xmlValues.Cat" :key="el.k6">{{xmlValues.Cat[k6].Id}}</option>
-                <option v-for="(el, k10) in xmlValues.Cat" :key="el.k10">
+                <option v-for="(el, k6) in returnCategories" :key="el.k6">{{returnCategories[k6]}}</option>
+<!--                 <option v-for="(el, k10) in xmlValues.Cat" :key="el.k10">
                   <p
                     v-for="(el, k11) in xmlValues.Cat[k10].Child"
                     :key="el.k11"
                   >{{xmlValues.Cat[k10].Child[k11].Id}}</p>
-                  <!-- look for better way looping through children -->
-                </option>
+                   look for better way looping through children 
+                </option> 
+                -->
               </select>
             </p>
             <p>Description:</p>
@@ -121,7 +116,7 @@
             <p>
               Parameters:
               <button
-                @click="addOption($store.state.xmlValues.Offers[config.curOfferKey].data.Pars, 0, 'Parameter')"
+                @click="addOption(xmlValues.Offers[config.curOfferKey].data.Pars, 0, 'Parameter')"
               >+1</button>
             </p>
             <div
@@ -139,7 +134,7 @@
                 <v-flex xs12 md4>
                 <button
                   class="x-btn"
-                  @click="deleteOption($store.state.xmlValues.Offers[config.curOfferKey].data.Pars, k3)"
+                  @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pars, k3)"
                 >X</button>
                 </v-flex>
               </v-layout>
@@ -162,6 +157,7 @@
           </div>
           <vue-over-body></vue-over-body>
           <mini-offer :constrOffer="constrOffer" :xmlValues="xmlValues" :mainData="mainData"></mini-offer>
+          <v-btn color="error" small @click.prevent="deletePriceList(mainData.curPriceList)">Delete this Price List</v-btn>
         </div>
 
         <!--  PREVIEW XML -->
@@ -177,7 +173,7 @@
       </div>
     </div>
     <div v-else>
-      <pre-editor></pre-editor>
+      <pre-editor :deletePriceList="deletePriceList"></pre-editor>
     </div>
   </v-container>
 </template>
@@ -205,9 +201,10 @@ export default {
 
   data () {
     return {
-      locData: {
-        showXml: false, // LOCAL ONLY
-        IdEditable: false // LOCAL ONLY
+      locData: {// LOCAL ONLY 
+        showXml: false,
+        IdEditable: false, 
+        categories: [], // for computed property returning categories
         /* tagCount: {
           CurrencyCount: 1 // ???
         } */
@@ -228,6 +225,17 @@ export default {
     ...mapGetters(['getOffer']),
     ...mapActions(['addNewOfferAction', 'addOptionAction']),
     ...mapState(['mainData']),
+    returnCategories() {
+      let cat = []
+      for (let i = 0; i < Object.keys(this.xmlValues.Cat).length; i++) {
+        for (let o = 0; o < Object.keys(this.xmlValues.Cat[i].Child).length; o++) {
+          cat.push(this.xmlValues.Cat[i].Child[o].Id)
+        }
+      }
+      console.log(`categories`)
+      console.log(cat)
+      return cat
+    },
     xmlValues() {
       return this.$store.state.curPriceListData.xmlValues
     },
@@ -248,10 +256,28 @@ export default {
   },
   methods: {
     getDataFromFB () {
-      this.$store.dispatch('getDataFromFB', this.mainData.curPriceList)
+      this.$store.dispatch('getDataFromFB')
     },
     setDataToFB () {
-      this.$store.dispatch('setDataToFB', this.mainData.curPriceList)
+      this.$store.dispatch('setDataToFB')
+    },
+    switchPriceList() {
+      let pr = confirm('Зберегти зміни в актуальному прайс-листі?')
+      if (pr) { 
+        this.setDataToFB()
+        this.$store.commit('setUnSetPriceList', {cur: '', set: 'N'})
+      }
+      console.log('template name below')
+      console.log(this.$store.state.PriceListDataTemplate.xmlValues.Offers[0].data.Name)
+    },
+    deletePriceList(pr) {
+      let conf = confirm('Ви справді хочете видалити прайслист під назвою "' + pr + '" ?')
+      if (conf) {
+        this.$store.dispatch('deletePriceListAction', pr)
+      }
+
+      
+
     },
     OfferConstructor (offer) {
       this.Available = offer.Available
@@ -318,20 +344,6 @@ export default {
       }
       return false
     },
-    getDateAndTime () {
-      const currentdate = new Date()
-      this.xmlValues.YmlDate =
-        currentdate.getFullYear() +
-        '-' +
-        (currentdate.getMonth() + 1) +
-        '-' +
-        currentdate.getDate() +
-        ' ' +
-        currentdate.getHours() +
-        ':' +
-        currentdate.getMinutes()
-    },
-
     ParameterConstr () {
       this.Name = ''
       this.Descr = ''
@@ -470,9 +482,6 @@ button {
 button:focus,
 input:focus {
   outline: none;
-}
-
-input {
 }
 
 select {

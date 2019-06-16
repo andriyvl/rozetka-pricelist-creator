@@ -30,7 +30,7 @@
       </p>
     </div>
 
-    <p>Categories: <button @click="addOption($store.state.xmlValues.Cat, 0, 'Cat')">Add new category</button></p>
+    <p>Categories: <button @click="addOption(xmlValues.Cat, 0, 'Cat')">Add new category</button></p>
     <div class="content-box" v-for="(el, k4) in xmlValues.Cat" :key="el.k4">
       <p>
         ID:
@@ -38,7 +38,7 @@
         Category Name:
         <input type="text" v-model="xmlValues.Cat[k4].Name">
         <button v-if="Object.keys(xmlValues.Cat).length > 1" class="x-btn" @click="deleteOption(xmlValues.Cat, k4)">X</button>
-        <button @click="addOption($store.state.xmlValues.Cat[k4].Child, 0, 'CatChild')">Add child category</button>
+        <button @click="addOption(xmlValues.Cat[k4].Child, 0, 'CatChild')">Add child category</button>
       </p>
       <div v-if="Object.keys(xmlValues.Cat[k4].Child).length > 0">
         <p style="margin-left: 25px" v-for="(el, k8) in xmlValues.Cat[k4].Child" :key="el.k8">
@@ -46,8 +46,7 @@
           <input class="input-id" type="text" v-model="xmlValues.Cat[k4].Child[k8].Id">
           Name:
           <input type="text" v-model="xmlValues.Cat[k4].Child[k8].Name">
-          <button class="x-btn" @click="deleteOption($store.state.xmlValues.Cat[k4].Child, k8)">X</button>
-          <!-- 4th parameter would be 0 to allow deletion of all childs, for now function cannot handle adding childs when none exist  -->
+          <button class="x-btn" @click="deleteOption(xmlValues.Cat[k4].Child, k8)">X</button>
         </p>
       </div>
     </div>
@@ -57,7 +56,29 @@
 import Editor from './Editor'
 export default {
   name: 'HeaderShopDescr',
-  props: ['xmlValues', 'addOption', 'deleteOption']
+  props: ['xmlValues', 'addOption', 'deleteOption'],
+  methods: {
+    getDateAndTime () {
+      const currentdate = new Date()
+      function getFormatedDate (para) {
+        if (para < 10) {
+          para = '0' + para
+        }
+        return para
+      }
+
+        this.xmlValues.YmlDate =
+        currentdate.getFullYear() +
+        '-' +
+        getFormatedDate(currentdate.getMonth() + 1) +
+        '-' +
+        getFormatedDate(currentdate.getDate()) +
+        ' ' +
+        getFormatedDate(currentdate.getHours()) +
+        ':' +
+        getFormatedDate(currentdate.getMinutes())
+    },
+  }
 }
 </script>
 <style>
