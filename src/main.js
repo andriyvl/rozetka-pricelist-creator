@@ -1,7 +1,7 @@
 import '@babel/polyfill'
 import Vue from 'vue'
 import './plugins/vuetify'
-// import Vuetify from 'vuetify'
+import Vuetify from 'vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -11,7 +11,11 @@ import '@fortawesome/fontawesome-free/css/all.css'
 
 import firebase from 'firebase'
 
-// Vue.use(Vuetify)
+import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
+
+Vue.use(Vuetify, {
+  iconfont: 'md'
+})
 
 Vue.config.productionTip = false
 

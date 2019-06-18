@@ -31,84 +31,95 @@
           <!-- setup @click.prevent -->
           <div class="offer">
             <h4>Offers</h4>
-              <!-- v-model.number - converts the input to number -->
-              <v-layout>
-                <v-flex xs12 md4 >
-                  <v-text-field
-                    disabled
-                    v-if="!locData.IdEditable"
-                    label="Offer ID"
-                    v-model="xmlValues.Offers[config.curOfferKey].Id"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Offer ID"
-                    v-else-if="locData.IdEditable"
-                    @blur="verifyID(config.tempOfferId)"
-                    maxlength="5"
-                    :placeholder="xmlValues.Offers[config.curOfferKey].Id"
-                    id="offer-id"
-                    v-model="config.tempOfferId"
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12 md4>
-                  <v-checkbox label="Edit" v-model="locData.IdEditable"></v-checkbox>
-                </v-flex>
-              </v-layout>
-              <v-text-field label="Name" v-model="xmlValues.Offers[config.curOfferKey].data.Name"></v-text-field>
-            
-            <p>
-              Price:
-              <input
-                type="number"
-                v-model="xmlValues.Offers[config.curOfferKey].data.Price"
-              >
-            </p>
-            <p>
-              <v-text-field
-                label="Stock quantity"
-                class="input-id"
-                v-model="xmlValues.Offers[config.curOfferKey].data.StockQ"
-              ></v-text-field> 
-              <v-checkbox label="Available"
-                v-model="xmlValues.Offers[config.curOfferKey].Available"
-              ></v-checkbox>
-              <!-- available trigger stock to 0 -->
-            </p>
+            <!-- v-model.number - converts the input to number -->
+            <v-layout>
+              <v-flex xs12 md4>
+                <v-text-field
+                  disabled
+                  v-if="!locData.IdEditable"
+                  label="Offer ID"
+                  v-model="xmlValues.Offers[config.curOfferKey].Id"
+                ></v-text-field>
+                <v-text-field
+                  label="Offer ID"
+                  v-else-if="locData.IdEditable"
+                  @blur="verifyID(config.tempOfferId)"
+                  maxlength="5"
+                  :placeholder="xmlValues.Offers[config.curOfferKey].Id"
+                  id="offer-id"
+                  v-model="config.tempOfferId"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 md4>
+                <v-switch color="green" label="Edit" v-model="locData.IdEditable"></v-switch>
+              </v-flex>
+            </v-layout>
+            <v-text-field label="Name" v-model="xmlValues.Offers[config.curOfferKey].data.Name"></v-text-field>
 
-            <p>
+            <v-layout row wrap >
+              <v-flex pa-1 xs4>
+                <v-checkbox
+                  color="green"
+                  label="Available"
+                  v-model="xmlValues.Offers[config.curOfferKey].Available"
+                ></v-checkbox>
+              </v-flex>
+              <v-flex pa-1 xs4>
+                <v-text-field
+                  type="number"
+                  label="Stock quantity"
+                  v-model="xmlValues.Offers[config.curOfferKey].data.StockQ"
+                ></v-text-field>
+              </v-flex>
+              <v-flex pa-1 xs4>
+                <v-text-field
+                  type="number"
+                  label="Price"
+                  v-model="xmlValues.Offers[config.curOfferKey].data.Price"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+
+              <v-container>
               Pictures:
               <button @click="addOption(xmlValues.Offers[config.curOfferKey].data.Pics)">+1</button>
-            </p>
             <p
               v-for="(el2, k2) in Object.keys(xmlValues.Offers[config.curOfferKey].data.Pics)"
               :key="el2.k2"
             >
-              <v-text-field
-                class="pic-input"
-                v-model="xmlValues.Offers[config.curOfferKey].data.Pics[k2]"
-              ></v-text-field>
-              <button
-                class="x-btn"
-                @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pics, k2)"
-              >X</button>
+
+                <v-layout row wrap>
+                  <v-flex>
+                    <v-text-field v-model="xmlValues.Offers[config.curOfferKey].data.Pics[k2]"></v-text-field>
+                  </v-flex>
+                  <v-flex xs1>
+                    <v-btn
+                      @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pics, k2)"
+                      fab
+                      small
+                      color="warning"
+                    >
+                      <v-icon light>remove</v-icon>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
             </p>
+              </v-container>
             <p>
               Category ID:
-              <select
+              <!--               <select
                 class="input-id"
                 v-model="xmlValues.Offers[config.curOfferKey].data.CatId"
               >
                 <option disabled value>Please select one</option>
                 <option v-for="(el, k6) in returnCategories" :key="el.k6">{{returnCategories[k6]}}</option>
-<!--                 <option v-for="(el, k10) in xmlValues.Cat" :key="el.k10">
-                  <p
-                    v-for="(el, k11) in xmlValues.Cat[k10].Child"
-                    :key="el.k11"
-                  >{{xmlValues.Cat[k10].Child[k11].Id}}</p>
-                   look for better way looping through children 
-                </option> 
-                -->
-              </select>
+              </select>-->
+              <v-overflow-btn
+                allow-overflow="false"
+                :items="returnCategories"
+                label="Category ID"
+                v-model="xmlValues.Offers[config.curOfferKey].data.CatId"
+              ></v-overflow-btn>
             </p>
             <p>Description:</p>
             <textarea v-model="xmlValues.Offers[config.curOfferKey].data.Descr"></textarea>
@@ -124,26 +135,34 @@
               :key="el3.k3"
             >
               <v-layout>
-                <v-flex xs12 md4 >
-                  <v-text-field label="Name" v-model="xmlValues.Offers[config.curOfferKey].data.Pars[k3].Name">
-                </v-text-field>
-                </v-flex>
-                <v-flex xs12 md4 >
-                  <v-text-field label="Description" style="width: 15rem" v-model="xmlValues.Offers[config.curOfferKey].data.Pars[k3].Descr"></v-text-field>
+                <v-flex xs12 md4>
+                  <v-text-field
+                    label="Name"
+                    v-model="xmlValues.Offers[config.curOfferKey].data.Pars[k3].Name"
+                  ></v-text-field>
                 </v-flex>
                 <v-flex xs12 md4>
-                <button
-                  class="x-btn"
-                  @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pars, k3)"
-                >X</button>
+                  <v-text-field
+                    label="Description"
+                    style="width: 15rem"
+                    v-model="xmlValues.Offers[config.curOfferKey].data.Pars[k3].Descr"
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12 md4>
+                  <button
+                    class="x-btn"
+                    @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pars, k3)"
+                  >X</button>
                 </v-flex>
               </v-layout>
             </div>
 
             <p>
-              <v-text-field label="Vendor" v-model="xmlValues.Offers[config.curOfferKey].data.Vendor"></v-text-field>
-              <v-text-field label="Url" v-model="xmlValues.Offers[config.curOfferKey].data.Url"></v-text-field>
-              Currency ID:
+              <v-text-field
+                label="Vendor"
+                v-model="xmlValues.Offers[config.curOfferKey].data.Vendor"
+              ></v-text-field>
+              <v-text-field label="Url" v-model="xmlValues.Offers[config.curOfferKey].data.Url"></v-text-field>Currency ID:
               <select
                 class="input-id"
                 v-model="xmlValues.Offers[config.curOfferKey].data.CurId"
@@ -157,7 +176,11 @@
           </div>
           <vue-over-body></vue-over-body>
           <mini-offer :constrOffer="constrOffer" :xmlValues="xmlValues" :mainData="mainData"></mini-offer>
-          <v-btn color="error" small @click.prevent="deletePriceList(mainData.curPriceList)">Delete this Price List</v-btn>
+          <v-btn
+            color="error"
+            small
+            @click.prevent="deletePriceList(mainData.curPriceList)"
+          >Delete this Price List</v-btn>
         </div>
 
         <!--  PREVIEW XML -->
@@ -179,17 +202,17 @@
 </template>
 
 <script>
-import XmlPreview from './XmlPreview'
-import HeaderShopDescr from './HeaderShopDescr'
-import Offer from './Offer'
-import MiniOffer from './MiniOffer'
-import { mapGetters, mapMutations, mapActions, mapState } from 'vuex'
-import { toPath, get, isObjectLike } from 'lodash-es'
-import VueOverBody from './MiniOfferSettingsPopUp'
-import PreEditor from './PreEditor'
+import XmlPreview from "./XmlPreview";
+import HeaderShopDescr from "./HeaderShopDescr";
+import Offer from "./Offer";
+import MiniOffer from "./MiniOffer";
+import { mapGetters, mapMutations, mapActions, mapState } from "vuex";
+import { toPath, get, isObjectLike } from "lodash-es";
+import VueOverBody from "./MiniOfferSettingsPopUp";
+import PreEditor from "./PreEditor";
 
 export default {
-  name: 'Editor',
+  name: "Editor",
   components: {
     XmlPreview,
     HeaderShopDescr,
@@ -199,12 +222,13 @@ export default {
     PreEditor
   },
 
-  data () {
+  data() {
     return {
-      locData: {// LOCAL ONLY 
+      locData: {
+        // LOCAL ONLY
         showXml: false,
-        IdEditable: false, 
-        categories: [], // for computed property returning categories
+        IdEditable: false,
+        categories: [] // for computed property returning categories
         /* tagCount: {
           CurrencyCount: 1 // ???
         } */
@@ -219,35 +243,39 @@ export default {
 
       }, */
       popUpOpen: 0
-    }
+    };
   },
   computed: {
-    ...mapGetters(['getOffer']),
-    ...mapActions(['addNewOfferAction', 'addOptionAction']),
-    ...mapState(['mainData']),
+    ...mapGetters(["getOffer"]),
+    ...mapActions(["addNewOfferAction", "addOptionAction"]),
+    ...mapState(["mainData"]),
     returnCategories() {
-      let cat = []
+      let cat = [];
       for (let i = 0; i < Object.keys(this.xmlValues.Cat).length; i++) {
-        for (let o = 0; o < Object.keys(this.xmlValues.Cat[i].Child).length; o++) {
-          cat.push(this.xmlValues.Cat[i].Child[o].Id)
+        for (
+          let o = 0;
+          o < Object.keys(this.xmlValues.Cat[i].Child).length;
+          o++
+        ) {
+          cat.push(this.xmlValues.Cat[i].Child[o].Id);
         }
       }
-      console.log(`categories`)
-      console.log(cat)
-      return cat
+      console.log(`categories`);
+      console.log(cat);
+      return cat;
     },
     xmlValues() {
-      return this.$store.state.curPriceListData.xmlValues
+      return this.$store.state.curPriceListData.xmlValues;
     },
     config() {
-      return this.$store.state.curPriceListData.config
+      return this.$store.state.curPriceListData.config;
     },
     StockQ: {
-      set (StockQ) {
-        this.xmlValues.Offers[1].data.StockQ = StockQ
+      set(StockQ) {
+        this.xmlValues.Offers[1].data.StockQ = StockQ;
       },
-      get () {
-        return this.xmlValues.Offers[1].data.StockQ
+      get() {
+        return this.xmlValues.Offers[1].data.StockQ;
       }
     }
     /*     ...mapMutations([
@@ -255,63 +283,64 @@ export default {
     ]) */
   },
   methods: {
-    getDataFromFB () {
-      this.$store.dispatch('getDataFromFB')
+    getDataFromFB() {
+      this.$store.dispatch("getDataFromFB");
     },
-    setDataToFB () {
-      this.$store.dispatch('setDataToFB')
+    setDataToFB() {
+      this.$store.dispatch("setDataToFB");
     },
     switchPriceList() {
-      let pr = confirm('Зберегти зміни в актуальному прайс-листі?')
-      if (pr) { 
-        this.setDataToFB()
-        this.$store.commit('setUnSetPriceList', {cur: '', set: 'N'})
+      let pr = confirm("Зберегти зміни в актуальному прайс-листі?");
+      if (pr) {
+        this.setDataToFB();
+        this.$store.commit("setUnSetPriceList", { cur: "", set: "N" });
       }
-      console.log('template name below')
-      console.log(this.$store.state.PriceListDataTemplate.xmlValues.Offers[0].data.Name)
+      console.log("template name below");
+      console.log(
+        this.$store.state.PriceListDataTemplate.xmlValues.Offers[0].data.Name
+      );
     },
     deletePriceList(pr) {
-      let conf = confirm('Ви справді хочете видалити прайслист під назвою "' + pr + '" ?')
+      let conf = confirm(
+        'Ви справді хочете видалити прайслист під назвою "' + pr + '" ?'
+      );
       if (conf) {
-        this.$store.dispatch('deletePriceListAction', pr)
+        this.$store.dispatch("deletePriceListAction", pr);
       }
-
-      
-
     },
-    OfferConstructor (offer) {
-      this.Available = offer.Available
-      this.Id = offer.Id
-      this.data = {}
-      this.data.Url = offer.data.Url
-      this.data.Price = offer.data.Price
-      this.data.CurId = offer.data.CurId
-      this.data.CatId = offer.data.CatId
-      this.data.Pics = {}
+    OfferConstructor(offer) {
+      this.Available = offer.Available;
+      this.Id = offer.Id;
+      this.data = {};
+      this.data.Url = offer.data.Url;
+      this.data.Price = offer.data.Price;
+      this.data.CurId = offer.data.CurId;
+      this.data.CatId = offer.data.CatId;
+      this.data.Pics = {};
       Object.keys(offer.data.Pics).map(key => {
-        this.data.Pics[key] = offer.data.Pics[key]
-      })
-      this.data.Name = offer.data.Name
-      this.data.Vendor = offer.data.Vendor
-      this.data.Descr = offer.data.Descr
-      this.data.Pars = {}
+        this.data.Pics[key] = offer.data.Pics[key];
+      });
+      this.data.Name = offer.data.Name;
+      this.data.Vendor = offer.data.Vendor;
+      this.data.Descr = offer.data.Descr;
+      this.data.Pars = {};
       Object.keys(offer.data.Pars).map(key => {
-        this.data.Pars[key] = {}
-        this.data.Pars[key].Name = offer.data.Pars[key].Name
-        this.data.Pars[key].Descr = offer.data.Pars[key].Descr
-      })
-      this.data.StockQ = offer.data.StockQ
+        this.data.Pars[key] = {};
+        this.data.Pars[key].Name = offer.data.Pars[key].Name;
+        this.data.Pars[key].Descr = offer.data.Pars[key].Descr;
+      });
+      this.data.StockQ = offer.data.StockQ;
     },
-    constrOffer (curO) {
-      let tempOffer = new this.OfferConstructor(this.xmlValues.Offers[curO])
-      let key = Object.keys(this.xmlValues.Offers).length
-      const tempId = this.incIdBy1() // increment ID with checking if already exist
-      this.config.lastID = tempId
-      tempOffer.Id = this.config.lastID
-      this.$store.dispatch('addNewOfferAction', {
+    constrOffer(curO) {
+      let tempOffer = new this.OfferConstructor(this.xmlValues.Offers[curO]);
+      let key = Object.keys(this.xmlValues.Offers).length;
+      const tempId = this.incIdBy1(); // increment ID with checking if already exist
+      this.config.lastID = tempId;
+      tempOffer.Id = this.config.lastID;
+      this.$store.dispatch("addNewOfferAction", {
         key: key,
         tempOffer: tempOffer
-      })
+      });
     },
     /*     addNewOffer (offerIndex, commit ) {
       let tempOffer = this.xmlValues.Offers[offerIndex]
@@ -321,126 +350,124 @@ export default {
       tempOffer.Id = this.config.lastID
       this.$store.dispatch('addNewOfferAction', {key, tempOffer})
     }, */
-    incIdBy1 () {
+    incIdBy1() {
       // function increments the ID by from last used ID
-      let c = '' + (parseInt(this.config.lastID) + 1) // replace with '' + 1 to populate all deleted IDs
+      let c = "" + (parseInt(this.config.lastID) + 1); // replace with '' + 1 to populate all deleted IDs
       for (let i = 0; i < 10000; i++) {
         if (c.length < 5) {
-          c = '0' + c
+          c = "0" + c;
         } else if (c.length === 5 && !this.checkIfIdExist(parseInt(c))) {
-          return c
+          return c;
         } else {
-          c = parseInt(c) + 1
-          c = '' + c
+          c = parseInt(c) + 1;
+          c = "" + c;
         }
       }
     },
-    checkIfIdExist (newId) {
+    checkIfIdExist(newId) {
       // checks if the ID exists in another offer
       for (let i = 0; i < Object.keys(this.xmlValues.Offers).length; i++) {
         if (newId === parseInt(this.xmlValues.Offers[i].Id)) {
-          return true
+          return true;
         }
       }
-      return false
+      return false;
     },
-    ParameterConstr () {
-      this.Name = ''
-      this.Descr = ''
+    ParameterConstr() {
+      this.Name = "";
+      this.Descr = "";
     },
-    CursConstr () {
-      this.Id = ''
-      this.Rate = ''
+    CursConstr() {
+      this.Id = "";
+      this.Rate = "";
     },
-    CatConstr () {
-      this.Id = ''
-      this.Name = ''
-      this.Child = {}
+    CatConstr() {
+      this.Id = "";
+      this.Name = "";
+      this.Child = {};
     },
-    CatChildConstr () {
-      this.Id = ''
-      this.Name = ''
+    CatChildConstr() {
+      this.Id = "";
+      this.Name = "";
     },
-    addOption (path, curKey, type) {
-      let key = Object.keys(path).length
-      let newEl
+    addOption(path, curKey, type) {
+      let key = Object.keys(path).length;
+      let newEl;
       if (type != undefined || type != null) {
-        let constrStr = toPath(type + 'Constr') // defining which constuctor to be used
-        let constr = get(this, constrStr)
-        newEl = new constr(path[curKey]) // creating element with constructor
+        let constrStr = toPath(type + "Constr"); // defining which constuctor to be used
+        let constr = get(this, constrStr);
+        newEl = new constr(path[curKey]); // creating element with constructor
       } else {
-        newEl = path[curKey]
+        newEl = path[curKey];
       }
-      this.$store.dispatch('addOptionAction', { path, key, newEl })
+      this.$store.dispatch("addOptionAction", { path, key, newEl });
     },
 
-    deleteOption (path, key) {
-      this.$store.dispatch('deleteOptionAction', { path, key })
+    deleteOption(path, key) {
+      this.$store.dispatch("deleteOptionAction", { path, key });
     },
 
     //  -> Implement BIN for restore deleted offer
 
-    verifyID (newId) {
+    verifyID(newId) {
       // used by manual edit of ID
       if (newId.length === 5 && parseInt(newId)) {
-        if (
-          newId === this.xmlValues.Offers[this.config.curOfferKey].Id
-        ) {
-          alert(`this is the same ID as before`)
+        if (newId === this.xmlValues.Offers[this.config.curOfferKey].Id) {
+          alert(`this is the same ID as before`);
         } else if (this.checkIfIdExist(newId)) {
-          alert(`ID ${newId} does already exist! Choose another one!`)
+          alert(`ID ${newId} does already exist! Choose another one!`);
         } else if (!this.checkIfIdExist(newId)) {
-          this.xmlValues.Offers[this.config.curOfferKey].Id = newId
-          this.locData.IdEditable = false
-          this.config.tempOfferId = ''
+          this.xmlValues.Offers[this.config.curOfferKey].Id = newId;
+          this.locData.IdEditable = false;
+          this.config.tempOfferId = "";
         }
-      } else if ((newId.length !== 5 || !parseInt(newId)) && newId !== '') {
-        alert('ID is in wrong format!')
+      } else if ((newId.length !== 5 || !parseInt(newId)) && newId !== "") {
+        alert("ID is in wrong format!");
       }
     },
-    deleteOffer (curI) {
+    deleteOffer(curI) {
       if (Object.keys(this.xmlValues.Offers).length > 1) {
         let answer = confirm(
           `Sure to delete offer ${
             this.xmlValues.Offers[curI].data.Name
           } whith ID: ${this.xmlValues.Offers[curI].Id}`
-        )
+        );
         if (answer) {
           if (
             Object.keys(this.xmlValues.Offers).length ===
             parseInt(curI) + 1
           ) {
-            this.config.curOfferKey = parseInt(curI) - 1
+            this.config.curOfferKey = parseInt(curI) - 1;
           }
-          this.$store.dispatch('deleteOfferAction', { curI })
+          this.$store.dispatch("deleteOfferAction", { curI });
         }
       } else {
-        alert(`You cant delete the last existing order!`)
+        alert(`You cant delete the last existing order!`);
       }
     },
 
-    download () {
-      const text = document.querySelector('pre').innerText
-      const filename = 'PriceFile.xml'
+    download() {
+      const text = document.querySelector("pre").innerText;
+      const filename = "PriceFile.xml";
 
-      var element = document.createElement('a')
+      var element = document.createElement("a");
       element.setAttribute(
-        'href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
-      )
-      element.setAttribute('download', filename)
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+      );
+      element.setAttribute("download", filename);
 
-      element.style.display = 'none'
-      document.body.appendChild(element)
+      element.style.display = "none";
+      document.body.appendChild(element);
 
-      element.click()
+      element.click();
 
-      document.body.removeChild(element)
+      document.body.removeChild(element);
     }
   },
   filters: {},
   watch: {}
-}
+};
 </script>
 
 <style>
@@ -454,7 +481,6 @@ export default {
   grid-template-columns: 9fr 4fr;
 }
 /* end */
-
 
 h1,
 h2,
@@ -540,41 +566,6 @@ textarea {
   border-radius: 10px;
   margin: 0 0 5px 0;
   padding: 0;
-}
-
-.offer-mini-container {
-  display: inline-block;
-  width: 200px;
-  margin: 1rem 0 0 1rem;
-}
-
-.offer-mini {
-  border: 1px solid black;
-  border-radius: 15px;
-  background-color: rgba(255, 150, 118, 0.87);
-}
-
-.offer-mini button {
-  background: none;
-  margin: 0.2rem 0.3rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  box-shadow: none;
-  text-shadow: none;
-  border-radius: 0.5rem;
-  padding: 0.1rem 0 0 0;
-  text-align: center;
-  border: 1px solid gray;
-  background-color: rgb(255, 255, 255);
-}
-
-.offer-mini .edit-status-btn {
-  background: rgba(216, 96, 96, 0.822);
-  color: white;
-}
-
-.offer-mini p {
-  text-shadow: 1px 1px 2px white, -1px -1px 2px white, 0px 0px 5px white;
 }
 
 .checkbox-avail[type="checkbox"] {
