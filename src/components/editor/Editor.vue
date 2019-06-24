@@ -79,9 +79,7 @@
                 ></v-text-field>
               </v-flex>
             </v-layout>
-
-              <v-container>
-              Pictures:
+              Зображення:
               <button @click="addOption(xmlValues.Offers[config.curOfferKey].data.Pics)">+1</button>
             <p
               v-for="(el2, k2) in Object.keys(xmlValues.Offers[config.curOfferKey].data.Pics)"
@@ -90,7 +88,7 @@
 
                 <v-layout row wrap>
                   <v-flex>
-                    <v-text-field v-model="xmlValues.Offers[config.curOfferKey].data.Pics[k2]"></v-text-field>
+                    <v-text-field  v-model="xmlValues.Offers[config.curOfferKey].data.Pics[k2]"></v-text-field>
                   </v-flex>
                   <v-flex xs1>
                     <v-btn
@@ -104,7 +102,6 @@
                   </v-flex>
                 </v-layout>
             </p>
-              </v-container>
             <p>
               Category ID:
               <!--               <select
@@ -115,7 +112,6 @@
                 <option v-for="(el, k6) in returnCategories" :key="el.k6">{{returnCategories[k6]}}</option>
               </select>-->
               <v-overflow-btn
-                allow-overflow="false"
                 :items="returnCategories"
                 label="Category ID"
                 v-model="xmlValues.Offers[config.curOfferKey].data.CatId"
@@ -221,18 +217,17 @@ export default {
     VueOverBody,
     PreEditor
   },
-
   data() {
     return {
       locData: {
         // LOCAL ONLY
         showXml: false,
-        IdEditable: false,
-        categories: [] // for computed property returning categories
+        IdEditable: false // for computed property returning categories
         /* tagCount: {
           CurrencyCount: 1 // ???
         } */
       },
+      categoriesArray: [],
       /*     mainData: {
         curPriceList: "", // to br chosen from priceLists
         priceLists: [], // to be filled in after each enter of editor
@@ -245,24 +240,36 @@ export default {
       popUpOpen: 0
     };
   },
+
   computed: {
     ...mapGetters(["getOffer"]),
     ...mapActions(["addNewOfferAction", "addOptionAction"]),
     ...mapState(["mainData"]),
     returnCategories() {
-      let cat = [];
-      for (let i = 0; i < Object.keys(this.xmlValues.Cat).length; i++) {
-        for (
-          let o = 0;
-          o < Object.keys(this.xmlValues.Cat[i].Child).length;
-          o++
-        ) {
-          cat.push(this.xmlValues.Cat[i].Child[o].Id);
+      if(this.mainData.priceListCompleted === true) {
+        let cat = [];
+        for (let i = 0; i < Object.keys(this.xmlValues.Cat).length; i++) {
+          cat.push(this.xmlValues.Cat[i].Id);
+          if (0 < Object.keys(this.xmlValues.Cat[i].Child).length) {
+            for (let a = 0; a < Object.keys(this.xmlValues.Cat[i].Child).length; a++) {
+              cat.push(this.xmlValues.Cat[i].Child[a].Id);
+              console.log(this.xmlValues.Cat[i].Child[a])
+              if (0 < Object.keys(this.xmlValues.Cat[i].Child[a].Child).length) {
+                for (let o = 0; o < Object.keys(this.xmlValues.Cat[i].Child[a].Child).length; o++) {
+                  cat.push(this.xmlValues.Cat[i].Child[a].Child[o].Id);
+                  if (0 < Object.keys(this.xmlValues.Cat[i].Child[a].Child[o].Child).length) {
+                    for (let u = 0; u < Object.keys(this.xmlValues.Cat[i].Child[a].Child[o].Child).length; u++) {
+                      cat.push(this.xmlValues.Cat[i].Child[a].Child[o].Child[u].Id);
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
+        return cat
       }
-      console.log(`categories`);
-      console.log(cat);
-      return cat;
+      return;
     },
     xmlValues() {
       return this.$store.state.curPriceListData.xmlValues;
@@ -293,7 +300,7 @@ export default {
       let pr = confirm("Зберегти зміни в актуальному прайс-листі?");
       if (pr) {
         this.setDataToFB();
-        this.$store.commit("setUnSetPriceList", { cur: "", set: "N" });
+        this.$store.commit("setUnSetPriceList", { cur: "", set: "N", done: false });
       }
       console.log("template name below");
       console.log(
@@ -381,22 +388,24 @@ export default {
       this.Id = "";
       this.Rate = "";
     },
-    CatConstr() {
-      this.Id = "";
+    CatConstr(el, id = '') {
+      id == '' ? this.Id = id : this.Id =  (parseInt(id) + 1) + ''; 
       this.Name = "";
       this.Child = {};
     },
-    CatChildConstr() {
-      this.Id = "";
+    CatChildConstr(el, id = '') {
+      id == '' ? this.Id = id : this.Id =  (parseInt(id) + 1) + '';  // TODO: add some advanced logic checking if childs exist and incrementing ids
       this.Name = "";
+      this.Child = {};
     },
     addOption(path, curKey, type) {
+      console.log(path)
       let key = Object.keys(path).length;
       let newEl;
       if (type != undefined || type != null) {
         let constrStr = toPath(type + "Constr"); // defining which constuctor to be used
         let constr = get(this, constrStr);
-        newEl = new constr(path[curKey]); // creating element with constructor
+        newEl = new constr(path[curKey], curKey); // creating element with constructor
       } else {
         newEl = path[curKey];
       }

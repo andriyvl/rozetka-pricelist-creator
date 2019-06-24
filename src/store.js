@@ -17,7 +17,8 @@ export default new Vuex.Store({
     mainData: {
       curPriceList: '',
       priceLists: [],
-      priceListSet: 'N'
+      priceListSet: 'N',
+      priceListCompleted: false
     },
     curPriceListData: {
       config: {
@@ -58,17 +59,8 @@ export default new Vuex.Store({
         Cat: {
           0: {
             Id: '1',
-            Name: 'Trusiki',
-            Child: {
-              0: { Id: '101', Name: 'Trusy' }
-            }
-          },
-          1: {
-            Id: '2',
-            Name: 'Pusiki',
-            Child: {
-              0: { Id: '201', Name: 'Pussy' }
-            }
+            Name: '',
+            Child: {}
           }
         },
         Offers: {
@@ -188,16 +180,22 @@ export default new Vuex.Store({
             Id: '1',
             Name: 'Верхній одяг',
             Child: {
-              0: { Id: '101', Name: 'Сорочки' },
-              1: { Id: '102', Name: 'Футболки' }
-            }
-          },
-          1: {
-            Id: '2',
-            Name: 'Нижній одяг',
-            Child: {
-              0: { Id: '201', Name: 'Штани' },
-              1: { Id: '202', Name: 'Шорти' }
+              0: {
+                Id: '101',
+                Name: 'Сорочки',
+                Child: {
+                  0: {
+                    Id: '1011',
+                    Name: 'Спідні сорочки',
+                    Child: {
+                      0: {
+                        Id: '1012',
+                        Name: 'Cпідні сорочки без рукавів'
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         },
@@ -209,7 +207,7 @@ export default new Vuex.Store({
               Url: 'www.адрес-вашого-сайту.домен',
               Price: '850',
               CurId: 'UAH',
-              CatId: '102',
+              CatId: '101',
               Pics: {
                 0: 'https://upload.wikimedia.org/wikipedia/commons/2/24/Blue_Tshirt.jpg'
               },
@@ -323,6 +321,7 @@ export default new Vuex.Store({
     setUnSetPriceList (state, payload) {
       state.mainData.curPriceList = payload.cur
       state.mainData.priceListSet = payload.set
+      state.mainData.priceListCompleted = payload.done
     },
     addPriceListToArray (state, payload) {
       state.mainData.priceLists = payload
@@ -330,6 +329,9 @@ export default new Vuex.Store({
     deletePriceListFromArray (state, payload) {
       let ind = state.mainData.priceLists.indexOf(payload)
       state.mainData.priceLists.pop(ind)
+    },
+    priceListCompleted (state) {
+      state.mainData.priceListCompleted = true
     }
   },
   actions: {
@@ -409,6 +411,7 @@ export default new Vuex.Store({
           dispatch('setDataToFB')
         }
       })
+      commit('priceListCompleted')
     },
     getPriceLists ({ state, commit }, payload) {
       let userid = firebase.auth().currentUser.uid
@@ -440,7 +443,7 @@ export default new Vuex.Store({
       let userid = firebase.auth().currentUser.uid
       firebase.database().ref('/users/' + userid).child(payload).remove()
 
-      commit('setUnSetPriceList', { cur: '', set: 'N' })
+      commit('setUnSetPriceList', { cur: '', set: 'N', done: false })
 
       commit('deletePriceListFromArray', payload)
       dispatch('setPriceListsToFB')

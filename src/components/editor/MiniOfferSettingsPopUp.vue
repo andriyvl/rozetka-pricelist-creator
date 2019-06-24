@@ -67,16 +67,18 @@ export default {
       return this.$store.state.curPriceListData.config.miniOfferSetup
     },
     returnPars () {
-      let arr = []
-      for (let off in this.xmlValues.Offers) {
-        for (let el4 in this.xmlValues.Offers[off].data.Pars) {
-          arr.push(this.xmlValues.Offers[off].data.Pars[el4].Name)
+      if (this.mainData.priceListCompleted === true) {
+        let arr = []
+        for (let off in this.xmlValues.Offers) {
+          for (let el4 in this.xmlValues.Offers[off].data.Pars) {
+            arr.push(this.xmlValues.Offers[off].data.Pars[el4].Name)
+          }
         }
+        var unique = arr.filter(function (elem, index, self) {
+          return index === self.indexOf(elem)
+        })
+        return unique
       }
-      var unique = arr.filter(function (elem, index, self) {
-        return index === self.indexOf(elem)
-      })
-      return unique
     }
   },
   methods: {
