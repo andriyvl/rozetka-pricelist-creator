@@ -39,6 +39,12 @@ export default {
         a += f + f + f + `<category id="${p[i].Id}">${p[i].Name}</category>`
         for (let [i1, k1] of Object.keys(p[i].Child)) {
           a += n + f + f + f + `<category id="${p[i].Child[i1].Id}" parentId="${p[i].Id}">${p[i].Child[i1].Name}</category>`
+          for (let [i2, k2] of Object.keys(p[i].Child[i1].Child)) {
+            a += n + f + f + f + `<category id="${p[i].Child[i1].Child[i2].Id}" parentId="${p[i].Child[i1].Id}">${p[i].Child[i1].Child[i2].Name}</category>`
+            for (let [i3, k3] of Object.keys(p[i].Child[i1].Child[i2].Child)) {
+              a += n + f + f + f + `<category id="${p[i].Child[i1].Child[i2].Child[i3].Id}" parentId="${p[i].Child[i1].Child[i2].Id}">${p[i].Child[i1].Child[i2].Child[i3].Name}</category>`
+            }
+          }
         }
       } return a + n + f + f + `</categories>`
     },

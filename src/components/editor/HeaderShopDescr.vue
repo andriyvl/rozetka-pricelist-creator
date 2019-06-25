@@ -50,7 +50,13 @@
     <div class="content-box" v-for="(el4, k4) in xmlValues.Cat" :key="el4.k4">
       <v-layout>
         <v-flex pa-1 sm1>
-          <v-text-field label="ID" placeholder="напр. 1" type="text" v-model="xmlValues.Cat[k4].Id"></v-text-field>
+          <v-text-field label="ID" 
+          placeholder="напр. 1" 
+          :rules="$store.state.validationRules.isNumber"
+          required
+          validate-on-blur 
+          v-model="xmlValues.Cat[k4].Id">
+          </v-text-field>
         </v-flex>
         <v-flex pa-1>
           <v-text-field
@@ -68,7 +74,7 @@
           >X</button>
         </v-flex>
         <v-flex pa-1>
-          <button @click="addOption(xmlValues.Cat[k4].Child, 0, 'CatChild')">Додати підкатегорію</button>
+          <button @click="addOption(xmlValues.Cat[k4].Child, xmlValues.Cat[k4].Id, 'CatChild')">Додати підкатегорію</button>
         </v-flex>
       </v-layout>
 
@@ -80,7 +86,9 @@
               <v-text-field
                 label="Child ID"
                 placeholder="напр.: 101"
-                type="text"
+                :rules="$store.state.validationRules.isNumber"
+                required
+                validate-on-blur
                 v-model="xmlValues.Cat[k4].Child[k8].Id"
               ></v-text-field>
             </v-flex>
@@ -97,7 +105,7 @@
             </v-flex>
             <v-flex pa-1>
               <button
-                @click="addOption(xmlValues.Cat[k4].Child[k8].Child, 0, 'CatChild')"
+                @click="addOption(xmlValues.Cat[k4].Child[k8].Child, xmlValues.Cat[k4].Child[k8].Id, 'CatChild')"
               >Додати підкатегорію</button>
             </v-flex>
           </v-layout>
@@ -110,7 +118,9 @@
                   <v-text-field
                     label="Child ID"
                     placeholder="напр.: 101"
-                    type="text"
+                    :rules="$store.state.validationRules.isNumber"
+                    required
+                    validate-on-blur
                     v-model="xmlValues.Cat[k4].Child[k8].Child[k9].Id"
                   ></v-text-field>
                 </v-flex>
@@ -127,9 +137,7 @@
                 </v-flex>
                 <v-flex pa-1>
                   <button
-                    @click="addOption(xmlValues.Cat[k4].Child[k8].Child[k9].Child, 
-                    0, 
-                    'CatChild')"
+                    @click="addOption(xmlValues.Cat[k4].Child[k8].Child[k9].Child, xmlValues.Cat[k4].Child[k8].Child[k9].Id, 'CatChild')"
                   >Додати підкатегорію</button>
                 </v-flex>
               </v-layout> 
@@ -140,12 +148,14 @@
                   v-for="(el10, k10) in xmlValues.Cat[k4].Child[k8].Child[k9].Child"
                   :key="el10.k10"
                 >
-                  <v-layout>
+                  <v-layout lazy-validation>
                     <v-flex pa-1 sm2>
                       <v-text-field
                         label="Child ID"
                         placeholder="напр.: 101"
-                        type="text"
+                        :rules="$store.state.validationRules.isNumber"
+                        required
+                        validate-on-blur
                         v-model="xmlValues.Cat[k4].Child[k8].Child[k9].Child[k10].Id"
                       ></v-text-field>
                     </v-flex>
@@ -178,6 +188,9 @@ import Editor from "./Editor";
 export default {
   name: "HeaderShopDescr",
   props: ["xmlValues", "addOption", "deleteOption"],
+  data: () => ({
+
+  }),
   created: () => {
     console.log('Header created')
     

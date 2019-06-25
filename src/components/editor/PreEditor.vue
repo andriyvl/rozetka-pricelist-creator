@@ -26,10 +26,10 @@
       <v-text-field
       v-if="addNew"
       v-model="name"
-      :counter="10"
       :rules="nameRules"
       label="Name"
       required
+      validate-on-blur
     ></v-text-field>
       <v-btn v-if="addNew" icon @click="addNew = false">X</v-btn>
     </v-layout>

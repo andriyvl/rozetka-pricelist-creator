@@ -253,7 +253,6 @@ export default {
           if (0 < Object.keys(this.xmlValues.Cat[i].Child).length) {
             for (let a = 0; a < Object.keys(this.xmlValues.Cat[i].Child).length; a++) {
               cat.push(this.xmlValues.Cat[i].Child[a].Id);
-              console.log(this.xmlValues.Cat[i].Child[a])
               if (0 < Object.keys(this.xmlValues.Cat[i].Child[a].Child).length) {
                 for (let o = 0; o < Object.keys(this.xmlValues.Cat[i].Child[a].Child).length; o++) {
                   cat.push(this.xmlValues.Cat[i].Child[a].Child[o].Id);
@@ -394,18 +393,17 @@ export default {
       this.Child = {};
     },
     CatChildConstr(el, id = '') {
-      id == '' ? this.Id = id : this.Id =  (parseInt(id) + 1) + '';  // TODO: add some advanced logic checking if childs exist and incrementing ids
+      Object.keys(el).length > 0 ? this.Id = parseInt(el[Object.keys(el).length - 1].Id) + 1 + '' : this.Id = id + 0 // if childs exist get last child id and increment by 1, else take parents id and CONCATINATE 0 on end
       this.Name = "";
       this.Child = {};
     },
     addOption(path, curKey, type) {
-      console.log(path)
       let key = Object.keys(path).length;
       let newEl;
       if (type != undefined || type != null) {
         let constrStr = toPath(type + "Constr"); // defining which constuctor to be used
         let constr = get(this, constrStr);
-        newEl = new constr(path[curKey], curKey); // creating element with constructor
+        newEl = new constr(path, curKey); // creating element with constructor
       } else {
         newEl = path[curKey];
       }

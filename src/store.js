@@ -14,6 +14,12 @@ export default new Vuex.Store({
     Editor: { title: 'Editor', path: '/editor', icon: 'fa-edit' },
     SignUp: { title: 'Sign Up', path: '/signup', icon: 'fa-user-plus' },
     SignIn: { title: 'Sign In', path: '/signin', icon: 'fa-sign-in-alt' },
+    validationRules: {
+      isNumber: [
+        v => !!v || 'ID is required!',
+        v => !isNaN(v) || 'ID should be a number'
+      ]
+    },
     mainData: {
       curPriceList: '',
       priceLists: [],
@@ -315,7 +321,6 @@ export default new Vuex.Store({
       Vue.delete(state, 'curPriceListData')
       let obj
       obj = JSON.parse(JSON.stringify(state.PriceListDataTemplate))
-      console.log(obj)
       Vue.set(state, 'curPriceListData', obj)
     },
     setUnSetPriceList (state, payload) {
