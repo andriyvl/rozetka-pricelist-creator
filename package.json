@@ -11,7 +11,7 @@
     "@babel/polyfill": "^7.0.0-rc.1",
     "@fortawesome/fontawesome-free": "^5.2.0",
     "firebase": "^5.8.2",
-    "lodash-es": "^4.17.11",
+    "lodash-es": "4.17.14",
     "register-service-worker": "^1.5.2",
     "roboto-fontface": "*",
     "vue": "^2.5.22",
