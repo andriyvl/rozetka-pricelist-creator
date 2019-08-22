@@ -3,52 +3,59 @@
     <!-- button to disable edit -->
     <h4>Heading</h4>
     <p>
-      XML version:
-      <input class="input-id" type="text" v-model="xmlValues.Xml.Version"> Encoding:
-      <input type="text" v-model="xmlValues.Xml.Encoding">
+      <v-text-field label="Версія XML" v-model="xmlValues.Xml.Version"></v-text-field> 
+      <v-text-field label="Encoding" v-model="xmlValues.Xml.Encoding"></v-text-field>
     </p>
     <p>
-      Yml catalog date:
-      <input type="text" v-model="xmlValues.YmlDate">
-      <button @click="getDateAndTime()">update</button>
+      <v-text-field label="Дата каталогу Yml" v-model="xmlValues.YmlDate"></v-text-field>
+      <v-icon @click="getDateAndTime()">refresh</v-icon>
     </p>
-    <h4>Shop description</h4>
-    <p>
-      Name:
-      <input type="text" v-model="xmlValues.Name">
-    </p>
-    <p>
-      Company:
-      <input type="text" v-model="xmlValues.Company">
-    </p>
-    <p>
-      URL:
-      <input type="text" v-model="xmlValues.Url">
-    </p>
+    <h4>Опис магазину</h4>
+    <v-text-field label="Назва магазину" v-model="xmlValues.Name"></v-text-field>
+    <v-text-field label="Назва компанії" v-model="xmlValues.Company"></v-text-field>
+    <v-text-field label="Адрес URL" placeholder="напр. www.nazva-mahazynu.ua" v-model="xmlValues.Url" ></v-text-field>
     <!-- add platform -->
-    <p>
-      Currencies:
-      <button @click="addOption($store.state.xmlValues.Curs, 0, 'Curs')">+1</button>
-    </p>
+    <v-layout row wrap>
+      <v-flex pa-1 sm2 align-self-center>
+        <p>Currencies:</p>
+      </v-flex>
+      <v-flex pa-1 sm1 align-self-center>
+        <v-icon @click="addOption(xmlValues.Curs, 0, 'Curs')">add_circle_outline</v-icon>
+      </v-flex>
+    </v-layout>
+
     <div v-for="(el, k) in Object.keys(xmlValues.Curs)" :key="el.k">
-      <p>
-        ID:
-        <input class="input-id" type="text" v-model="xmlValues.Curs[k].Id"> Currency Rate:
-        <input class="input-id" type="text" v-model="xmlValues.Curs[k].Rate">
-        <button
-          v-if="Object.keys(xmlValues.Curs).length > 1"
-          class="x-btn"
-          @click="deleteOption($store.state.xmlValues.Curs, k)"
-        >X</button>
-      </p>
+      <v-layout>
+        <v-flex pa-1 sm1 align-self-center>
+          <v-icon v-if="Object.keys(xmlValues.Curs).length > 1" @click="deleteOption(xmlValues.Curs, k)" >remove_circle_outline</v-icon>
+        </v-flex>
+        <v-flex pa-1 sm2>
+          <v-text-field
+            label="ID валюти"
+            placeholder="напр. UAH"
+            type="text"
+            v-model="xmlValues.Curs[k].Id"
+          ></v-text-field>  
+        </v-flex>
+        <v-flex pa-1 sm2>
+        <v-text-field
+            label="Курс валюти"
+            placeholder="напр. 1"
+            type="text"
+            v-model="xmlValues.Curs[k].Rate"
+        ></v-text-field>          
+        </v-flex>
+      </v-layout>
     </div>
 
     <p>
-      Categories:
-      <button @click="addOption(xmlValues.Cat, xmlValues.Cat[Object.keys(xmlValues.Cat).length - 1].Id, 'Cat')">Додати нову категорію</button>
+      Категорії: <v-icon @click="addOption(xmlValues.Cat, xmlValues.Cat[Object.keys(xmlValues.Cat).length - 1].Id, 'Cat')">add_circle_outline</v-icon>
     </p>
     <div class="content-box" v-for="(el4, k4) in xmlValues.Cat" :key="el4.k4">
       <v-layout>
+        <v-flex pa-1 sm1 align-self-center>
+          <v-icon v-if="Object.keys(xmlValues.Cat).length > 1" @click="deleteOption(xmlValues.Cat, k4)">remove_circle_outline</v-icon>
+        </v-flex>
         <v-flex pa-1 sm1>
           <v-text-field label="ID" 
           placeholder="напр. 1" 
@@ -66,22 +73,21 @@
             v-model="xmlValues.Cat[k4].Name"
           ></v-text-field>
         </v-flex>
-        <v-flex pa-1>
-          <button
-            v-if="Object.keys(xmlValues.Cat).length > 1"
-            class="x-btn"
-            @click="deleteOption(xmlValues.Cat, k4)"
-          >X</button>
-        </v-flex>
-        <v-flex pa-1>
-          <button @click="addOption(xmlValues.Cat[k4].Child, xmlValues.Cat[k4].Id, 'CatChild')">Додати підкатегорію</button>
+        <v-flex pa-1 sm1 align-self-center>
+            <v-icon @click="addOption(xmlValues.Cat[k4].Child, xmlValues.Cat[k4].Id, 'CatChild')">add_circle_outline</v-icon>
         </v-flex>
       </v-layout>
 
 <!-- SUB CATEGORY LEVEL 1 -->
       <div v-if="Object.keys(xmlValues.Cat[k4].Child).length > 0">
-        <div style="margin-left: 25px" v-for="(el8, k8) in xmlValues.Cat[k4].Child" :key="el8.k8">
+        <div  class="content-box" style="margin-left: 25px" v-for="(el8, k8) in xmlValues.Cat[k4].Child" :key="el8.k8">
           <v-layout>
+            <v-flex pa-1 sm1 align-self-center>
+              <v-icon>subdirectory_arrow_right</v-icon>
+            </v-flex>
+            <v-flex pa-1 sm1 align-self-center>
+              <v-icon @click="deleteOption(xmlValues.Cat[k4].Child, k8)">remove_circle_outline</v-icon>
+            </v-flex>
             <v-flex pa-1 sm2>
               <v-text-field
                 label="Child ID"
@@ -100,20 +106,21 @@
                 v-model="xmlValues.Cat[k4].Child[k8].Name"
               ></v-text-field>
             </v-flex>
-            <v-flex pa-1>
-              <button class="x-btn" @click="deleteOption(xmlValues.Cat[k4].Child, k8)">X</button>
-            </v-flex>
-            <v-flex pa-1>
-              <button
-                @click="addOption(xmlValues.Cat[k4].Child[k8].Child, xmlValues.Cat[k4].Child[k8].Id, 'CatChild')"
-              >Додати підкатегорію</button>
+            <v-flex pa-1 sm1 align-self-center>
+              <v-icon @click="addOption(xmlValues.Cat[k4].Child[k8].Child, xmlValues.Cat[k4].Child[k8].Id, 'CatChild')">add_circle_outline</v-icon>
             </v-flex>
           </v-layout>
 
 <!-- SUB CATEGORY LEVEL 2 -->
            <div v-if="Object.keys(xmlValues.Cat[k4].Child[k8].Child).length > 0">
-            <div style="margin-left: 25px" v-for="(el9, k9) in xmlValues.Cat[k4].Child[k8].Child" :key="el9.k9">
+            <div  class="content-box" style="margin-left: 25px" v-for="(el9, k9) in xmlValues.Cat[k4].Child[k8].Child" :key="el9.k9">
               <v-layout>
+                <v-flex pa-1 sm1 align-self-center>
+                  <v-icon>subdirectory_arrow_right</v-icon>
+                </v-flex>
+                <v-flex pa-1 sm1 align-self-center>
+                  <v-icon @click="deleteOption(xmlValues.Cat[k4].Child[k8].Child, k9)">remove_circle_outline</v-icon>
+                </v-flex>
                 <v-flex pa-1 sm2>
                   <v-text-field
                     label="Child ID"
@@ -132,23 +139,21 @@
                     v-model="xmlValues.Cat[k4].Child[k8].Child[k9].Name"
                   ></v-text-field>
                 </v-flex>
-                <v-flex pa-1>
-                  <button class="x-btn" @click="deleteOption(xmlValues.Cat[k4].Child[k8].Child, k9)">X</button>
-                </v-flex>
-                <v-flex pa-1>
-                  <button
-                    @click="addOption(xmlValues.Cat[k4].Child[k8].Child[k9].Child, xmlValues.Cat[k4].Child[k8].Child[k9].Id, 'CatChild')"
-                  >Додати підкатегорію</button>
+
+                <v-flex pa-1 sm1 align-self-center>
+                  <v-icon @click="addOption(xmlValues.Cat[k4].Child[k8].Child[k9].Child, xmlValues.Cat[k4].Child[k8].Child[k9].Id, 'CatChild')">add_circle_outline</v-icon>
                 </v-flex>
               </v-layout> 
 <!-- SUB CATEGORY LEVEL 3 -->
               <div v-if="Object.keys(xmlValues.Cat[k4].Child[k8].Child[k9].Child).length > 0">
-                <div
-                  style="margin-left: 25px"
-                  v-for="(el10, k10) in xmlValues.Cat[k4].Child[k8].Child[k9].Child"
-                  :key="el10.k10"
-                >
+                <div class="content-box" style="margin-left: 25px" v-for="(el10, k10) in xmlValues.Cat[k4].Child[k8].Child[k9].Child" :key="el10.k10">
                   <v-layout lazy-validation>
+                    <v-flex pa-1 sm1 align-self-center>
+                      <v-icon>subdirectory_arrow_right</v-icon>
+                    </v-flex>
+                    <v-flex pa-1 sm1 align-self-center>
+                      <v-icon @click="deleteOption(xmlValues.Cat[k4].Child[k8].Child[k9].Child, k10)">remove_circle_outline</v-icon>
+                    </v-flex>                    
                     <v-flex pa-1 sm2>
                       <v-text-field
                         label="Child ID"
@@ -167,12 +172,7 @@
                         v-model="xmlValues.Cat[k4].Child[k8].Child[k9].Child[k10].Name"
                       ></v-text-field>
                     </v-flex>
-                    <v-flex pa-1>
-                      <button
-                        class="x-btn"
-                        @click="deleteOption(xmlValues.Cat[k4].Child[k8].Child[k9].Child, k10)"
-                      >X</button>
-                    </v-flex>
+
                   </v-layout>
                 </div>
               </div>  

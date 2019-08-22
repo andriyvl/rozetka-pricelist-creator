@@ -79,26 +79,19 @@
                 ></v-text-field>
               </v-flex>
             </v-layout>
-              Зображення:
-              <button @click="addOption(xmlValues.Offers[config.curOfferKey].data.Pics)">+1</button>
-            <p
-              v-for="(el2, k2) in Object.keys(xmlValues.Offers[config.curOfferKey].data.Pics)"
-              :key="el2.k2"
-            >
-
+            <v-layout row wrap>
+              <p>Зображення:</p> 
+              <v-flex pa-1 sm1 align-self-center>
+                <v-icon @click="addOption(xmlValues.Offers[config.curOfferKey].data.Pics)">add_circle_outline</v-icon>
+              </v-flex>
+            </v-layout>
+            <p v-for="(el2, k2) in Object.keys(xmlValues.Offers[config.curOfferKey].data.Pics)" :key="el2.k2">
                 <v-layout row wrap>
+                  <v-flex pa-1 sm1 align-self-center>
+                      <v-icon @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pics, k2)">remove_circle_outline</v-icon>
+                  </v-flex>
                   <v-flex>
                     <v-text-field  v-model="xmlValues.Offers[config.curOfferKey].data.Pics[k2]"></v-text-field>
-                  </v-flex>
-                  <v-flex xs1>
-                    <v-btn
-                      @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pics, k2)"
-                      fab
-                      small
-                      color="warning"
-                    >
-                      <v-icon light>remove</v-icon>
-                    </v-btn>
                   </v-flex>
                 </v-layout>
             </p>
@@ -119,18 +112,22 @@
             </p>
             <p>Description:</p>
             <textarea v-model="xmlValues.Offers[config.curOfferKey].data.Descr"></textarea>
-
-            <p>
-              Parameters:
-              <button
-                @click="addOption(xmlValues.Offers[config.curOfferKey].data.Pars, 0, 'Parameter')"
-              >+1</button>
-            </p>
+            <v-layout row wrap>
+                <p>Parameters:</p>
+              <v-flex pa-1 sm1 align-self-center>
+                <v-icon @click="addOption(xmlValues.Offers[config.curOfferKey].data.Pars, 0, 'Parameter')">add_circle_outline</v-icon>
+              </v-flex>
+            </v-layout>  
+                
+                
             <div
               v-for="(el3, k3) in Object.keys(xmlValues.Offers[config.curOfferKey].data.Pars)"
               :key="el3.k3"
             >
               <v-layout>
+                <v-flex pa-1 sm1 align-self-center>
+                  <v-icon @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pars, k3)">remove_circle_outline</v-icon>
+                </v-flex>                
                 <v-flex xs12 md4>
                   <v-text-field
                     label="Name"
@@ -144,12 +141,7 @@
                     v-model="xmlValues.Offers[config.curOfferKey].data.Pars[k3].Descr"
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs12 md4>
-                  <button
-                    class="x-btn"
-                    @click="deleteOption(xmlValues.Offers[config.curOfferKey].data.Pars, k3)"
-                  >X</button>
-                </v-flex>
+  
               </v-layout>
             </div>
 
