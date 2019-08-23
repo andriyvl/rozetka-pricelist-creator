@@ -14,7 +14,8 @@
                 <p style="font-size: 1.4rem">ID: <b>{{xmlValues.Offers[k5].Id}}</b> CAT: <b>{{xmlValues.Offers[k5].data.CatId}}</b></p>
                 <p v-if="miniOfferSetup.Props.Stock_Quantity">В наявності: <input class="checkbox-avail" type="checkbox" v-model="xmlValues.Offers[k5].Available"> Кількість: {{xmlValues.Offers[k5].data.StockQ}}</p>
                 <p v-if="miniOfferSetup.Props.Price">Ціна: {{xmlValues.Offers[k5].data.Price}}{{xmlValues.Offers[k5].data.CurId}}</p>
-                
+                <p v-if="miniOfferSetup.Props.Url">URL: {{xmlValues.Offers[k5].data.Url}}</p>
+                <p v-if="miniOfferSetup.Props.Vendor">Виробник: {{xmlValues.Offers[k5].data.Vendor}}</p>
               </v-flex>
             </v-layout>
  

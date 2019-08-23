@@ -1,16 +1,20 @@
 <template>
   <div class="spoiler heading-shop-descr">
     <!-- button to disable edit -->
-    <h4>Heading</h4>
-    <p>
-      <v-text-field label="Версія XML" v-model="xmlValues.Xml.Version"></v-text-field> 
-      <v-text-field label="Encoding" v-model="xmlValues.Xml.Encoding"></v-text-field>
-    </p>
-    <p>
-      <v-text-field label="Дата каталогу Yml" v-model="xmlValues.YmlDate"></v-text-field>
-      <v-icon @click="getDateAndTime()">refresh</v-icon>
-    </p>
-    <h4>Опис магазину</h4>
+    <v-layout>
+      <v-flex sm2 pa-1>
+        <v-text-field label="Версія XML" v-model="xmlValues.Xml.Version"></v-text-field>   
+      </v-flex>
+      <v-flex sm2 pa-1>
+        <v-text-field label="Encoding" v-model="xmlValues.Xml.Encoding"></v-text-field>
+      </v-flex>      
+      <v-flex sm4 pa-1>
+        <v-text-field label="Дата каталогу Yml" v-model="xmlValues.YmlDate"></v-text-field>  
+      </v-flex>
+      <v-flex pa-1 sm2 align-self-center>
+        <v-icon @click="getDateAndTime()">refresh</v-icon>  
+      </v-flex>
+    </v-layout>
     <v-text-field label="Назва магазину" v-model="xmlValues.Name"></v-text-field>
     <v-text-field label="Назва компанії" v-model="xmlValues.Company"></v-text-field>
     <v-text-field label="Адрес URL" placeholder="напр. www.nazva-mahazynu.ua" v-model="xmlValues.Url" ></v-text-field>
@@ -30,20 +34,10 @@
           <v-icon v-if="Object.keys(xmlValues.Curs).length > 1" @click="deleteOption(xmlValues.Curs, k)" >remove_circle_outline</v-icon>
         </v-flex>
         <v-flex pa-1 sm2>
-          <v-text-field
-            label="ID валюти"
-            placeholder="напр. UAH"
-            type="text"
-            v-model="xmlValues.Curs[k].Id"
-          ></v-text-field>  
+          <v-text-field label="ID валюти" placeholder="напр. UAH" v-model="xmlValues.Curs[k].Id" ></v-text-field>  
         </v-flex>
         <v-flex pa-1 sm2>
-        <v-text-field
-            label="Курс валюти"
-            placeholder="напр. 1"
-            type="text"
-            v-model="xmlValues.Curs[k].Rate"
-        ></v-text-field>          
+        <v-text-field label="Курс валюти" placeholder="напр. 1" v-model="xmlValues.Curs[k].Rate"></v-text-field>          
         </v-flex>
       </v-layout>
     </div>
@@ -66,12 +60,7 @@
           </v-text-field>
         </v-flex>
         <v-flex pa-1>
-          <v-text-field
-            label="Назва Категорії"
-            placeholder="напр. Верхній Одяг"
-            type="text"
-            v-model="xmlValues.Cat[k4].Name"
-          ></v-text-field>
+          <v-text-field label="Назва Категорії" placeholder="напр. Верхній Одяг" v-model="xmlValues.Cat[k4].Name"></v-text-field>
         </v-flex>
         <v-flex pa-1 sm1 align-self-center>
             <v-icon @click="addOption(xmlValues.Cat[k4].Child, xmlValues.Cat[k4].Id, 'CatChild')">add_circle_outline</v-icon>
@@ -79,8 +68,8 @@
       </v-layout>
 
 <!-- SUB CATEGORY LEVEL 1 -->
-      <div v-if="Object.keys(xmlValues.Cat[k4].Child).length > 0">
-        <div  class="content-box" style="margin-left: 25px" v-for="(el8, k8) in xmlValues.Cat[k4].Child" :key="el8.k8">
+      <div ma-1 pa-1 v-if="Object.keys(xmlValues.Cat[k4].Child).length > 0">
+        <div  class="content-box"  style="margin: 5px 5px 5px 25px" v-for="(el8, k8) in xmlValues.Cat[k4].Child" :key="el8.k8">
           <v-layout>
             <v-flex pa-1 sm1 align-self-center>
               <v-icon>subdirectory_arrow_right</v-icon>
@@ -99,11 +88,7 @@
               ></v-text-field>
             </v-flex>
             <v-flex pa-1>
-              <v-text-field
-                label="Назва"
-                placeholder="напр. Блузи"
-                type="text"
-                v-model="xmlValues.Cat[k4].Child[k8].Name"
+              <v-text-field label="Назва" placeholder="напр. Блузи" v-model="xmlValues.Cat[k4].Child[k8].Name"
               ></v-text-field>
             </v-flex>
             <v-flex pa-1 sm1 align-self-center>
@@ -113,7 +98,7 @@
 
 <!-- SUB CATEGORY LEVEL 2 -->
            <div v-if="Object.keys(xmlValues.Cat[k4].Child[k8].Child).length > 0">
-            <div  class="content-box" style="margin-left: 25px" v-for="(el9, k9) in xmlValues.Cat[k4].Child[k8].Child" :key="el9.k9">
+            <div  class="content-box" style="margin: 5px 5px 5px 25px" v-for="(el9, k9) in xmlValues.Cat[k4].Child[k8].Child" :key="el9.k9">
               <v-layout>
                 <v-flex pa-1 sm1 align-self-center>
                   <v-icon>subdirectory_arrow_right</v-icon>
@@ -132,21 +117,15 @@
                   ></v-text-field>
                 </v-flex>
                 <v-flex pa-1>
-                  <v-text-field
-                    label="Назва"
-                    placeholder="напр. Блузи"
-                    type="text"
-                    v-model="xmlValues.Cat[k4].Child[k8].Child[k9].Name"
-                  ></v-text-field>
+                  <v-text-field label="Назва" placeholder="напр. Блузи"  v-model="xmlValues.Cat[k4].Child[k8].Child[k9].Name"></v-text-field>
                 </v-flex>
-
                 <v-flex pa-1 sm1 align-self-center>
                   <v-icon @click="addOption(xmlValues.Cat[k4].Child[k8].Child[k9].Child, xmlValues.Cat[k4].Child[k8].Child[k9].Id, 'CatChild')">add_circle_outline</v-icon>
                 </v-flex>
               </v-layout> 
 <!-- SUB CATEGORY LEVEL 3 -->
               <div v-if="Object.keys(xmlValues.Cat[k4].Child[k8].Child[k9].Child).length > 0">
-                <div class="content-box" style="margin-left: 25px" v-for="(el10, k10) in xmlValues.Cat[k4].Child[k8].Child[k9].Child" :key="el10.k10">
+                <div class="content-box" style="margin: 5px 5px 5px 25px" v-for="(el10, k10) in xmlValues.Cat[k4].Child[k8].Child[k9].Child" :key="el10.k10">
                   <v-layout lazy-validation>
                     <v-flex pa-1 sm1 align-self-center>
                       <v-icon>subdirectory_arrow_right</v-icon>
@@ -165,14 +144,8 @@
                       ></v-text-field>
                     </v-flex>
                     <v-flex pa-1>
-                      <v-text-field
-                        label="Назва"
-                        placeholder="напр. Блузи"
-                        type="text"
-                        v-model="xmlValues.Cat[k4].Child[k8].Child[k9].Child[k10].Name"
-                      ></v-text-field>
+                      <v-text-field label="Назва" placeholder="напр. Блузи" v-model="xmlValues.Cat[k4].Child[k8].Child[k9].Child[k10].Name"></v-text-field>
                     </v-flex>
-
                   </v-layout>
                 </div>
               </div>  

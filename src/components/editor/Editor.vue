@@ -150,25 +150,29 @@
                 label="Vendor"
                 v-model="xmlValues.Offers[config.curOfferKey].data.Vendor"
               ></v-text-field>
-              <v-text-field label="Url" v-model="xmlValues.Offers[config.curOfferKey].data.Url"></v-text-field>Currency ID:
-              <select
-                class="input-id"
+              <v-text-field label="Url" v-model="xmlValues.Offers[config.curOfferKey].data.Url"></v-text-field>
+              Currency ID:
+              <v-overflow-btn
+                :items="returnCurrencies"
+                label="Currency ID"
                 v-model="xmlValues.Offers[config.curOfferKey].data.CurId"
-              >
-                <option disabled value>Please select one</option>
-                <option v-for="(el, k7) in xmlValues.Curs" :key="el.k7">{{xmlValues.Curs[k7].Id}}</option>
-              </select>
+              ></v-overflow-btn>
+
             </p>
             <v-btn color="info" small @click="constrOffer(config.curOfferKey)">Copy to new</v-btn>
             <v-btn color="error" small @click="deleteOffer(config.curOfferKey)">Delete offer</v-btn>
           </div>
-          <vue-over-body></vue-over-body>
           <mini-offer :constrOffer="constrOffer" :xmlValues="xmlValues" :mainData="mainData"></mini-offer>
-          <v-btn
-            color="error"
-            small
-            @click.prevent="deletePriceList(mainData.curPriceList)"
-          >Delete this Price List</v-btn>
+          <v-layout>
+            <v-flex>
+              <vue-over-body></vue-over-body>
+            </v-flex>
+            <v-flex>
+              <v-btn color="error" small @click.prevent="deletePriceList(mainData.curPriceList)">Delete this Price List</v-btn>              
+            </v-flex>
+          </v-layout>
+          
+          
         </div>
 
         <!--  PREVIEW XML -->
@@ -261,6 +265,13 @@ export default {
         return cat
       }
       return;
+    },
+    returnCurrencies () {
+      let cur = []
+      for (let i = 0; i < Object.keys(this.xmlValues.Curs).length; i++) {
+        cur.push(this.xmlValues.Curs[i].Id)
+      }
+      return cur;
     },
     xmlValues() {
       return this.$store.state.curPriceListData.xmlValues;
