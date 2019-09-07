@@ -182,7 +182,7 @@
           Preview XML
           <input type="checkbox" v-model="locData.showXml">
         </p>
-        <v-btn flat small @click="download()">Download XML</v-btn>
+        <v-btn text small @click="download()">Download XML</v-btn>
         <!--       <button @click="httpSubmit">http</button> -->
         <xml-preview v-show="locData.showXml" :xmlValues="xmlValues"></xml-preview>
       </div>
@@ -311,7 +311,7 @@ export default {
     },
     deletePriceList(pr) {
       let conf = confirm(
-        'Ви справді хочете видалити прайслист під назвою "' + pr + '" ?'
+        'Ви справді хочете видалити?' + pr
       );
       if (conf) {
         this.$store.dispatch("deletePriceListAction", pr);

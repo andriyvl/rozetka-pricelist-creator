@@ -1,7 +1,10 @@
 import '@babel/polyfill'
 import Vue from 'vue'
-import './plugins/vuetify'
-import Vuetify from 'vuetify'
+
+// import './plugins/vuetify'
+// import Vuetify from 'vuetify'
+// import 'vuetify/dist/vuetify.min.css'
+
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -13,9 +16,7 @@ import firebase from 'firebase'
 
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 
-Vue.use(Vuetify, {
-  iconfont: 'md'
-})
+import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
@@ -35,6 +36,7 @@ const unsubscribe = firebase.auth()
       el: '#app',
       router,
       store,
+      vuetify,
       render: h => h(App),
       created () {
         if (firebaseUser) {

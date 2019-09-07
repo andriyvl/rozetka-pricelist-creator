@@ -391,7 +391,7 @@ export default new Vuex.Store({
     getDataFromFB ({ state, commit, dispatch }, payload) {
       let userid = firebase.auth().currentUser.uid
       let cur = state.mainData.curPriceList
-      firebase.database().ref('/users/' + userid + '/' + cur).once('value').then(function (snapshot) {
+      firebase.database().ref('/users/' + userid + '/data' + '/' + cur).once('value').then(function (snapshot) {
         let tempdata = snapshot.val()
         if (tempdata) {
           let xmlData = tempdata.xmlValues
@@ -422,13 +422,22 @@ export default new Vuex.Store({
       let userid = firebase.auth().currentUser.uid
       firebase.database().ref('/users/' + userid + '/mainData/priceLists').once('value').then(function (snapshot) {
         let tempdata = snapshot.val()
-        commit('setPriceLists', tempdata)
+        if (tempdata !== (undefined || null)) {
+          let priceListsAddedFlag = []
+          tempdata.forEach(element => {
+            element['flag'] = false
+            priceListsAddedFlag.push(element)
+          })
+          commit('setPriceLists', priceListsAddedFlag)
+        } else {
+          commit('setPriceLists', [{ name: 'PriceList1', description: 'Sample Description', flag: false }])
+        }
       })
     },
     setDataToFB ({ state, commit, dispatch }, payload) {
       let userid = firebase.auth().currentUser.uid
       let cur = state.mainData.curPriceList
-      firebase.database().ref('/users/' + userid + '/' + cur).set({
+      firebase.database().ref('/users/' + userid + '/data/' + cur).set({
         ...state.curPriceListData
         // curPriceList: state.mainData.curPriceList,
         // priceLists: state.mainData.priceLists,
@@ -440,17 +449,23 @@ export default new Vuex.Store({
     },
     setPriceListsToFB ({ state, commit }, payload) {
       let userid = firebase.auth().currentUser.uid
+      let priceListsRemovedFlag = []
+      state.mainData.priceLists.forEach(element => {
+        delete element['flag']
+        priceListsRemovedFlag.push(element)
+      })
       firebase.database().ref('/users/' + userid + '/mainData/priceLists').set({
-        ...state.mainData.priceLists
+        ...priceListsRemovedFlag
       })
     },
     deletePriceListAction ({ state, commit, dispatch }, payload) {
       let userid = firebase.auth().currentUser.uid
-      firebase.database().ref('/users/' + userid).child(payload).remove()
-
+      for (let i = 0; i < payload.length; i++) {
+        console.log(payload[i])
+        firebase.database().ref('/users/' + userid + '/data/').child(state.mainData.priceLists[payload[i]].name).remove()
+        commit('deletePriceListFromArray', payload[i])
+      }
       commit('setUnSetPriceList', { cur: '', set: 'N', done: false })
-
-      commit('deletePriceListFromArray', payload)
       dispatch('setPriceListsToFB')
     }
   },
